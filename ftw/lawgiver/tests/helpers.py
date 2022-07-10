@@ -41,7 +41,7 @@ def run_command(cmd, cwd=None):
     stdout, stderr = proc.communicate()
     if proc.poll():
         raise Exception('Error while running "{0}":\n{1}'.format(
-            cmd, stdout + stderr))
+            cmd, str(stdout) + str(stderr)))
 
 
 def switch_language(portal, lang_code):
