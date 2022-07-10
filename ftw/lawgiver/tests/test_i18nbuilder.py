@@ -106,15 +106,15 @@ class TestI18nBuilder(TestCase):
         with self.assertRaises(ValueError) as cm:
             I18nBuilder('/tmp/invalid/path/specification.txt')
 
-        self.assertEquals('Path "/tmp/invalid/path/specification.txt"'
-                          ' does not exist.',
-                          str(cm.exception))
+        self.assertEqual('Path "/tmp/invalid/path/specification.txt"'
+                         ' does not exist.',
+                         str(cm.exception))
 
     def test_get_locales_directory(self):
         builder = I18nBuilder(self.simple_workflow_spec_path)
         locales_path = builder.get_locales_directory_path()
-        self.assertEquals(os.path.join(I18N_ASSETS, 'locales'),
-                          locales_path)
+        self.assertEqual(os.path.join(I18N_ASSETS, 'locales'),
+                         locales_path)
 
     def test_get_locales_directory_not_found_returns_None(self):
         asset_path = os.path.join(os.path.dirname(__file__),

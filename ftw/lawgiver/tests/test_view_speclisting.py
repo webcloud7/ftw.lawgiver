@@ -51,7 +51,7 @@ class TestSpecificationListingsView(TestCase):
     def test_listing_spec_descriptions(self, browser):
         browser.login(SITE_OWNER_NAME).visit(view='lawgiver-list-specs')
 
-        self.assertEquals(
+        self.assertEqual(
             {'another-spec-based-workflow': '',
              'My Custom Workflow (my_custom_workflow)':
                  'A three state publication workflow',
@@ -71,7 +71,7 @@ class TestSpecificationListingsView(TestCase):
         links = [link.attrib.get('href')
                  for link in browser.css('.specifications dt a')]
 
-        self.assertEquals(
+        self.assertEqual(
             sorted(links), sorted(set(links)),
             'There are ambiguous spec links. Is the hashing wrong?')
 

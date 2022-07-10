@@ -61,7 +61,7 @@ class TestGenerator(BaseTest):
             workflowxml.STATUS_STANDALONE % {
                 'title': 'Foo',
                 'id': 'example-workflow--STATUS--foo',
-                })
+            })
 
         self.assert_xml(expected, result.getvalue())
 
@@ -84,7 +84,7 @@ class TestGenerator(BaseTest):
             workflowxml.STATUS_STANDALONE % {
                 'title': status_title,
                 'id': 'workflow--STATUS--hello-world',
-                })
+            })
 
         self.assert_xml(expected, result.getvalue())
 
@@ -110,14 +110,14 @@ class TestGenerator(BaseTest):
                 workflowxml.STATUS % {
                     'title': 'Bar',
                     'id': 'workflow--STATUS--bar',
-                    } % (workflowxml.EXIT_TRANSITION %
-                         'workflow--TRANSITION--fuize--bar_foo'),
+                } % (workflowxml.EXIT_TRANSITION %
+                     'workflow--TRANSITION--fuize--bar_foo'),
 
                 workflowxml.STATUS % {
                     'title': 'Foo',
                     'id': 'workflow--STATUS--foo',
-                    } % (workflowxml.EXIT_TRANSITION %
-                         'workflow--TRANSITION--barize--foo_bar'),
+                } % (workflowxml.EXIT_TRANSITION %
+                     'workflow--TRANSITION--barize--foo_bar'),
 
                 workflowxml.TRANSITION % {
                     'id': 'workflow--TRANSITION--barize--foo_bar',
@@ -131,7 +131,7 @@ class TestGenerator(BaseTest):
                     'target_state': 'workflow--STATUS--foo',
                     'guards': workflowxml.GUARDS_DISABLED},
 
-                ))
+            ))
 
         self.assert_xml(expected, result.getvalue())
 
@@ -160,14 +160,14 @@ class TestGenerator(BaseTest):
                 workflowxml.STATUS % {
                     'title': 'Bar',
                     'id': 'workflow--STATUS--bar',
-                    } % (workflowxml.EXIT_TRANSITION %
-                         'workflow--TRANSITION--fuize--bar_foo'),
+                } % (workflowxml.EXIT_TRANSITION %
+                     'workflow--TRANSITION--fuize--bar_foo'),
 
                 workflowxml.STATUS % {
                     'title': 'Foo',
                     'id': 'workflow--STATUS--foo',
-                    } % (workflowxml.EXIT_TRANSITION %
-                         'workflow--TRANSITION--barize--foo_bar'),
+                } % (workflowxml.EXIT_TRANSITION %
+                     'workflow--TRANSITION--barize--foo_bar'),
 
                 workflowxml.TRANSITION_WITH_CUSTOM_URL % {
                     'id': 'workflow--TRANSITION--barize--foo_bar',
@@ -183,16 +183,16 @@ class TestGenerator(BaseTest):
                     'guards': workflowxml.GUARDS_DISABLED,
                     'url_viewname': 'custom_wf_action'},
 
-                ))
+            ))
 
         self.assert_xml(expected, result.getvalue())
 
     def test_workflow_with_managed_permissions(self):
         self.register_permissions(**{
-                'cmf.ModifyPortalContent': 'Modify portal content',
-                'zope2.View': 'View',
-                'zope2.AccessContentsInformation': \
-                    'Access contents information',
+            'cmf.ModifyPortalContent': 'Modify portal content',
+            'zope2.View': 'View',
+            'zope2.AccessContentsInformation':
+            'Access contents information',
                 'cmf.ManagePortal': 'Manage portal'})
 
         self.map_permissions(['View', 'Access contents information'], 'view')
@@ -205,43 +205,42 @@ class TestGenerator(BaseTest):
         spec.role_mapping['admin'] = 'Administrator'
 
         spec.states['Foo'] = Status('Foo', [
-                ('writer', 'view'),
-                ('writer', 'edit'),
-                ('admin', 'view'),
-                ('admin', 'manage')])
+            ('writer', 'view'),
+            ('writer', 'edit'),
+            ('admin', 'view'),
+            ('admin', 'manage')])
         spec.validate()
 
         result = BytesIO()
         WorkflowGenerator()('example-workflow', spec).write(result)
 
-
         xml_permissions_declaration = ''.join((
-                workflowxml.PERMISSION % 'Access contents information',
-                workflowxml.PERMISSION % 'Manage portal',
-                workflowxml.PERMISSION % 'Modify portal content',
-                workflowxml.PERMISSION % 'View',
-                ))
+            workflowxml.PERMISSION % 'Access contents information',
+            workflowxml.PERMISSION % 'Manage portal',
+            workflowxml.PERMISSION % 'Modify portal content',
+            workflowxml.PERMISSION % 'View',
+        ))
 
         xml_status_defininition = workflowxml.STATUS % {
             'title': 'Foo',
             'id': 'example-workflow--STATUS--foo',
-            } % ''.join((
+        } % ''.join((
 
-                (workflowxml.PERMISSION_MAP %
-                 'Access contents information') % ''.join((
-                        workflowxml.PERMISSION_ROLE % 'Administrator',
-                        workflowxml.PERMISSION_ROLE % 'Editor')),
+            (workflowxml.PERMISSION_MAP %
+             'Access contents information') % ''.join((
+                 workflowxml.PERMISSION_ROLE % 'Administrator',
+                 workflowxml.PERMISSION_ROLE % 'Editor')),
 
-                (workflowxml.PERMISSION_MAP % 'Manage portal') % (
-                    workflowxml.PERMISSION_ROLE % 'Administrator'),
+            (workflowxml.PERMISSION_MAP % 'Manage portal') % (
+                workflowxml.PERMISSION_ROLE % 'Administrator'),
 
-                (workflowxml.PERMISSION_MAP % 'Modify portal content') % (
-                    workflowxml.PERMISSION_ROLE % 'Editor'),
+            (workflowxml.PERMISSION_MAP % 'Modify portal content') % (
+                workflowxml.PERMISSION_ROLE % 'Editor'),
 
-                (workflowxml.PERMISSION_MAP % 'View') % ''.join((
-                        workflowxml.PERMISSION_ROLE % 'Administrator',
-                        workflowxml.PERMISSION_ROLE % 'Editor')),
-                ))
+            (workflowxml.PERMISSION_MAP % 'View') % ''.join((
+                workflowxml.PERMISSION_ROLE % 'Administrator',
+                workflowxml.PERMISSION_ROLE % 'Editor')),
+        ))
 
         expected = workflowxml.WORKFLOW % {
             'id': 'example-workflow',
@@ -260,11 +259,11 @@ class TestGenerator(BaseTest):
         spec.role_mapping['boss'] = 'Reviewer'
 
         private = spec.states['Private'] = Status('Private', [
-                ('employee', 'publish'),
-                ('boss', 'publish')])
+            ('employee', 'publish'),
+            ('boss', 'publish')])
 
         published = spec.states['Published'] = Status('Published', [
-                ('boss', 'retract')])
+            ('boss', 'retract')])
 
         spec.transitions.append(Transition('publish', private, published))
         spec.transitions.append(Transition('retract', published, private))
@@ -283,13 +282,13 @@ class TestGenerator(BaseTest):
                 workflowxml.STATUS % {
                     'title': 'Private',
                     'id': 'wf--STATUS--private',
-                    } % workflowxml.EXIT_TRANSITION % (
+                } % workflowxml.EXIT_TRANSITION % (
                     'wf--TRANSITION--publish--private_published'),
 
                 workflowxml.STATUS % {
                     'title': 'Published',
                     'id': 'wf--STATUS--published',
-                    } % workflowxml.EXIT_TRANSITION % (
+                } % workflowxml.EXIT_TRANSITION % (
                     'wf--TRANSITION--retract--published_private'),
 
                 workflowxml.TRANSITION % {
@@ -297,9 +296,9 @@ class TestGenerator(BaseTest):
                     'title': 'publish',
                     'target_state': 'wf--STATUS--published',
                     'guards': workflowxml.GUARDS % ''.join((
-                            workflowxml.GUARD_ROLE % 'Editor',
-                            workflowxml.GUARD_ROLE % 'Reviewer',
-                            ))},
+                        workflowxml.GUARD_ROLE % 'Editor',
+                        workflowxml.GUARD_ROLE % 'Reviewer',
+                    ))},
 
                 workflowxml.TRANSITION % {
                     'id': 'wf--TRANSITION--retract--published_private',
@@ -307,18 +306,18 @@ class TestGenerator(BaseTest):
                     'target_state': 'wf--STATUS--private',
                     'guards': workflowxml.GUARDS % (
                         workflowxml.GUARD_ROLE % 'Reviewer',
-                        )},
+                    )},
 
-                ))
+            ))
 
         self.assert_definition_xmls(expected, result.getvalue())
 
     def test_workflow_with_unkown_action_raises(self):
         self.register_permissions(**{
-                'cmf.ModifyPortalContent': 'Modify portal content',
-                'zope2.View': 'View',
-                'zope2.AccessContentsInformation': \
-                    'Access contents information'})
+            'cmf.ModifyPortalContent': 'Modify portal content',
+            'zope2.View': 'View',
+            'zope2.AccessContentsInformation':
+            'Access contents information'})
 
         self.map_permissions(['View', 'Access contents information'], 'view')
         self.map_permissions(['Modify portal content'], 'edit')
@@ -329,12 +328,12 @@ class TestGenerator(BaseTest):
         spec.role_mapping['admin'] = 'Administrator'
 
         foo = spec.states['Foo'] = Status('Foo', [
-                ('writer', 'view'),
-                ('writer', 'edit'),
-                ('writer', 'publish'),
-                ('admin', 'view'),
-                ('admin', 'publish'),
-                ('admin', 'bar')])
+            ('writer', 'view'),
+            ('writer', 'edit'),
+            ('writer', 'publish'),
+            ('admin', 'view'),
+            ('admin', 'publish'),
+            ('admin', 'bar')])
 
         spec.transitions.append(Transition('publish', foo, foo))
         spec.validate()
@@ -344,9 +343,8 @@ class TestGenerator(BaseTest):
         with self.assertRaises(Exception) as cm:
             generator('example-workflow', spec)
 
-        self.assertEquals('Action "bar" is neither action group nor transition.',
-                          str(cm.exception))
-
+        self.assertEqual('Action "bar" is neither action group nor transition.',
+                         str(cm.exception))
 
     def test_get_translations(self):
         spec = Specification(title='Workflow',
@@ -357,11 +355,11 @@ class TestGenerator(BaseTest):
         spec.role_descriptions['employee'] = 'A regular company employee.'
 
         private = spec.states['Private'] = Status('Private', [
-                ('employee', 'publish'),
-                ('boss', 'publish')])
+            ('employee', 'publish'),
+            ('boss', 'publish')])
 
         published = spec.states['Published'] = Status('Published', [
-                ('boss', 'retract')])
+            ('boss', 'retract')])
 
         spec.transitions.append(Transition('publish', private, published))
         spec.transitions.append(Transition('retract', published, private))
@@ -371,7 +369,7 @@ class TestGenerator(BaseTest):
         result = WorkflowGenerator().get_translations('wf', spec)
 
         self.maxDiff = None
-        self.assertEquals(
+        self.assertEqual(
             {'Private': 'Private',
              'Published': 'Published',
              'publish': 'publish',
@@ -396,7 +394,7 @@ class TestGenerator(BaseTest):
         spec.states['Published'] = Status('Published', [])
         result = WorkflowGenerator().get_states('wf', spec)
 
-        self.assertEquals(
+        self.assertEqual(
             ['wf--STATUS--private',
              'wf--STATUS--published'],
 
@@ -405,10 +403,10 @@ class TestGenerator(BaseTest):
 
     def test_inherited_roles(self):
         self.register_permissions(**{
-                'cmf.ModifyPortalContent': 'Modify portal content',
-                'zope2.View': 'View',
-                'zope2.AccessContentsInformation': \
-                    'Access contents information',
+            'cmf.ModifyPortalContent': 'Modify portal content',
+            'zope2.View': 'View',
+            'zope2.AccessContentsInformation':
+            'Access contents information',
                 'cmf.ManagePortal': 'Manage portal'})
 
         self.map_permissions(['View', 'Access contents information'], 'view')
@@ -448,73 +446,73 @@ class TestGenerator(BaseTest):
         WorkflowGenerator()('example-workflow', spec).write(result)
 
         xml_permissions_declaration = ''.join((
-                workflowxml.PERMISSION % 'Access contents information',
-                workflowxml.PERMISSION % 'Modify portal content',
-                workflowxml.PERMISSION % 'View',
-                ))
+            workflowxml.PERMISSION % 'Access contents information',
+            workflowxml.PERMISSION % 'Modify portal content',
+            workflowxml.PERMISSION % 'View',
+        ))
 
         xml_foo_defininition = workflowxml.STATUS % {
             'title': 'Foo',
             'id': 'example-workflow--STATUS--foo',
-            } % ''.join((
+        } % ''.join((
 
-                workflowxml.EXIT_TRANSITION % (
+            workflowxml.EXIT_TRANSITION % (
                     'example-workflow--TRANSITION--publish--foo_bar'),
 
-                (workflowxml.PERMISSION_MAP %
-                 'Access contents information') % ''.join((
-                        workflowxml.PERMISSION_ROLE % 'Administrator',
-                        workflowxml.PERMISSION_ROLE % 'Editor',
-                        workflowxml.PERMISSION_ROLE % 'Manager',
-                        workflowxml.PERMISSION_ROLE % 'Reader')),
+            (workflowxml.PERMISSION_MAP %
+             'Access contents information') % ''.join((
+                 workflowxml.PERMISSION_ROLE % 'Administrator',
+                 workflowxml.PERMISSION_ROLE % 'Editor',
+                 workflowxml.PERMISSION_ROLE % 'Manager',
+                 workflowxml.PERMISSION_ROLE % 'Reader')),
 
-                (workflowxml.PERMISSION_MAP %
+            (workflowxml.PERMISSION_MAP %
                  'Modify portal content') % ''.join((
-                        workflowxml.PERMISSION_ROLE % 'Administrator',
-                        workflowxml.PERMISSION_ROLE % 'Editor',
-                        workflowxml.PERMISSION_ROLE % 'Manager',
-                        workflowxml.PERMISSION_ROLE % 'Reader')),
+                     workflowxml.PERMISSION_ROLE % 'Administrator',
+                     workflowxml.PERMISSION_ROLE % 'Editor',
+                     workflowxml.PERMISSION_ROLE % 'Manager',
+                     workflowxml.PERMISSION_ROLE % 'Reader')),
 
-                (workflowxml.PERMISSION_MAP % 'View') % ''.join((
-                        workflowxml.PERMISSION_ROLE % 'Administrator',
-                        workflowxml.PERMISSION_ROLE % 'Editor',
-                        workflowxml.PERMISSION_ROLE % 'Manager',
-                        workflowxml.PERMISSION_ROLE % 'Reader')),
-                ))
+            (workflowxml.PERMISSION_MAP % 'View') % ''.join((
+                workflowxml.PERMISSION_ROLE % 'Administrator',
+                workflowxml.PERMISSION_ROLE % 'Editor',
+                workflowxml.PERMISSION_ROLE % 'Manager',
+                workflowxml.PERMISSION_ROLE % 'Reader')),
+        ))
 
         xml_bar_defininition = workflowxml.STATUS % {
             'title': 'Bar',
             'id': 'example-workflow--STATUS--bar',
-            } % ''.join((
+        } % ''.join((
 
-                workflowxml.EXIT_TRANSITION % (
+            workflowxml.EXIT_TRANSITION % (
                     'example-workflow--TRANSITION--retract--bar_foo'),
 
-                workflowxml.EMPTY_PERMISSION_MAP % (
-                    'Access contents information'),
-                workflowxml.EMPTY_PERMISSION_MAP % 'Modify portal content',
-                workflowxml.EMPTY_PERMISSION_MAP % 'View',
-                ))
+            workflowxml.EMPTY_PERMISSION_MAP % (
+                'Access contents information'),
+            workflowxml.EMPTY_PERMISSION_MAP % 'Modify portal content',
+            workflowxml.EMPTY_PERMISSION_MAP % 'View',
+        ))
 
         xml_publish_transition = workflowxml.TRANSITION % {
             'id': 'example-workflow--TRANSITION--publish--foo_bar',
             'title': 'publish',
             'target_state': 'example-workflow--STATUS--bar',
             'guards': workflowxml.GUARDS % ''.join((
-                    workflowxml.GUARD_ROLE % 'Administrator',
-                    workflowxml.GUARD_ROLE % 'Editor',
-                    workflowxml.GUARD_ROLE % 'Manager',
-                    workflowxml.GUARD_ROLE % 'Reader',
-                    ))}
+                workflowxml.GUARD_ROLE % 'Administrator',
+                workflowxml.GUARD_ROLE % 'Editor',
+                workflowxml.GUARD_ROLE % 'Manager',
+                workflowxml.GUARD_ROLE % 'Reader',
+            ))}
 
         xml_retract_transition = workflowxml.TRANSITION % {
             'id': 'example-workflow--TRANSITION--retract--bar_foo',
             'title': 'retract',
             'target_state': 'example-workflow--STATUS--foo',
             'guards': workflowxml.GUARDS % ''.join((
-                    workflowxml.GUARD_ROLE % 'Administrator',
-                    workflowxml.GUARD_ROLE % 'Manager',
-                    ))}
+                workflowxml.GUARD_ROLE % 'Administrator',
+                workflowxml.GUARD_ROLE % 'Manager',
+            ))}
 
         expected = workflowxml.WORKFLOW % {
             'id': 'example-workflow',
@@ -553,18 +551,18 @@ class TestGenerator(BaseTest):
                 workflowxml.STATUS_STANDALONE % {
                     'title': 'Pending',
                     'id': 'wf--STATUS--pending',
-                    },
+                },
 
                 workflowxml.WORKLIST % {
                     'id': 'wf--WORKLIST--pending',
                     'status_id': 'wf--STATUS--pending',
                     'status_title': 'Pending',
                     'guards': workflowxml.GUARDS % ''.join((
-                            workflowxml.GUARD_ROLE % 'Editor',
-                            workflowxml.GUARD_ROLE % 'Reviewer',
-                            ))
-                    },
+                        workflowxml.GUARD_ROLE % 'Editor',
+                        workflowxml.GUARD_ROLE % 'Reviewer',
+                    ))
+                },
 
-                ))
+            ))
 
         self.assert_definition_xmls(expected, result.getvalue())

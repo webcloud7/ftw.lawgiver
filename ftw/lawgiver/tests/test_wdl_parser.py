@@ -44,7 +44,7 @@ class TestParser(MockTestCase):
         self.assertTrue(ISpecification.providedBy(result),
                         'parser result is not an ISpecification')
 
-        self.assertEquals(result.title, 'a Workflow')
+        self.assertEqual(result.title, 'a Workflow')
 
     def test_only_one_section_allowed(self):
         lines = (
@@ -55,11 +55,11 @@ class TestParser(MockTestCase):
         with self.assertRaises(ParsingError) as cm:
             self.parse_lines(*lines)
 
-        self.assertEquals('Exactly one ini-style section is required, '
-                          'containing the workflow title.',
-                          str(cm.exception))
+        self.assertEqual('Exactly one ini-style section is required, '
+                         'containing the workflow title.',
+                         str(cm.exception))
 
-        self.assertEquals(
+        self.assertEqual(
             None, self.parse_lines(*lines, silent=True),
             'Parser should not raise an exception when silent=True')
 
@@ -68,30 +68,30 @@ class TestParser(MockTestCase):
             '[foo]',
             'Description: The Description')
 
-        self.assertEquals(spec.description, 'The Description')
+        self.assertEqual(spec.description, 'The Description')
 
     def test_description_lowercase(self):
         spec = self.parse_lines(
             '[foo]',
             'description: The Description')
 
-        self.assertEquals(spec.description, 'The Description')
+        self.assertEqual(spec.description, 'The Description')
 
     def test_transition_url(self):
         spec = self.parse_lines('[foo]')
-        self.assertEquals(spec.custom_transition_url, None)
+        self.assertEqual(spec.custom_transition_url, None)
 
         spec = self.parse_lines(
             '[foo]',
             'Transition-URL = foo?id=%(transition)s')
 
-        self.assertEquals(spec.custom_transition_url, 'foo?id=%(transition)s')
+        self.assertEqual(spec.custom_transition_url, 'foo?id=%(transition)s')
 
         spec = self.parse_lines(
             '[foo]',
             'transition-url = foo?id=%(transition)s')
 
-        self.assertEquals(spec.custom_transition_url, 'foo?id=%(transition)s')
+        self.assertEqual(spec.custom_transition_url, 'foo?id=%(transition)s')
 
     def test_states(self):
         spec = self.parse_lines(
@@ -104,7 +104,7 @@ class TestParser(MockTestCase):
             'Status Public:',
             '  An editor can view this content.')
 
-        self.assertEquals(
+        self.assertEqual(
             {'Private': u'<Status "Private">',
              'Public': u'<Status "Public">'},
 
@@ -124,7 +124,7 @@ class TestParser(MockTestCase):
             ''
             'Status Published:')
 
-        self.assertEquals(
+        self.assertEqual(
             {'Private': u'<Status "Private">',
              'Pending': u'<Status "Pending">',
              'Published': u'<Status "Published">'},
@@ -138,9 +138,9 @@ class TestParser(MockTestCase):
             '  An editor can view this content.',
             '  A supervisor can edit this content')
 
-        self.assertEquals([('editor', 'view'),
-                           ('supervisor', 'edit')],
-                          spec.states['Private'].statements)
+        self.assertEqual([('editor', 'view'),
+                          ('supervisor', 'edit')],
+                         spec.states['Private'].statements)
 
     def test_anyone_statements(self):
         spec = self.parse_lines(
@@ -149,8 +149,8 @@ class TestParser(MockTestCase):
             '  Anyone can view this content.')
 
         # anyone should be lowercased when matching.
-        self.assertEquals([('anyone', 'view')],
-                          spec.states['Private'].statements)
+        self.assertEqual([('anyone', 'view')],
+                         spec.states['Private'].statements)
 
     def test_context_less_statements(self):
         spec = self.parse_lines(
@@ -158,8 +158,8 @@ class TestParser(MockTestCase):
             'Status Private:',
             '  A editor can publish.')
 
-        self.assertEquals([('editor', 'publish')],
-                          spec.states['Private'].statements)
+        self.assertEqual([('editor', 'publish')],
+                         spec.states['Private'].statements)
 
     def test_multi_word_statements(self):
         spec = self.parse_lines(
@@ -167,8 +167,8 @@ class TestParser(MockTestCase):
             'Status Private:',
             '  A editor in chief can manage portlets on this context.')
 
-        self.assertEquals([('editor in chief', 'manage portlets')],
-                          spec.states['Private'].statements)
+        self.assertEqual([('editor in chief', 'manage portlets')],
+                         spec.states['Private'].statements)
 
     def test_transitions(self):
         spec = self.parse_lines(
@@ -184,7 +184,7 @@ class TestParser(MockTestCase):
             '  publish (Private => Published)',
             '  retract (Published => Private)')
 
-        self.assertEquals(
+        self.assertEqual(
             set(['<Transition "publish" ["Private" => "Published"]>',
                  '<Transition "retract" ["Published" => "Private"]>']),
             set(map(six.text_type, spec.transitions)))
@@ -199,11 +199,11 @@ class TestParser(MockTestCase):
         with self.assertRaises(ParsingError) as cm:
             self.parse_lines(*lines)
 
-        self.assertEquals(
+        self.assertEqual(
             'Transition line has an invalid format: "this is invalid"',
             str(cm.exception))
 
-        self.assertEquals(
+        self.assertEqual(
             None, self.parse_lines(*lines, silent=True),
             'Parser should not raise an exception when silent=True')
 
@@ -215,9 +215,9 @@ class TestParser(MockTestCase):
             '  editor in-chief => Reviewer',
             '  admin => Site Administrator')
 
-        self.assertEquals({'editor in-chief': 'Reviewer',
-                           'admin': 'Site Administrator'},
-                          spec.role_mapping)
+        self.assertEqual({'editor in-chief': 'Reviewer',
+                          'admin': 'Site Administrator'},
+                         spec.role_mapping)
 
     def test_invalid_role_mapping_line(self):
         lines = (
@@ -228,11 +228,11 @@ class TestParser(MockTestCase):
         with self.assertRaises(ParsingError) as cm:
             self.parse_lines(*lines)
 
-        self.assertEquals(
+        self.assertEqual(
             'Invalid format in role mapping: "this is wrong"',
             str(cm.exception))
 
-        self.assertEquals(
+        self.assertEqual(
             None, self.parse_lines(*lines, silent=True),
             'Parser should not raise an exception when silent=True')
 
@@ -248,8 +248,8 @@ class TestParser(MockTestCase):
             '  editor',
             '  editor in-chief')
 
-        self.assertEquals(['editor', 'editor in-chief'],
-                          spec.visible_roles)
+        self.assertEqual(['editor', 'editor in-chief'],
+                         spec.visible_roles)
 
     def test_role_descriptions(self):
         spec = self.parse_lines(
@@ -269,7 +269,7 @@ class TestParser(MockTestCase):
             '  The editor in chief',
             '  reviews text.')
 
-        self.assertEquals(
+        self.assertEqual(
             {'editor': 'The editor writes text.',
              'editor in-chief': 'The editor in chief reviews text.'},
             spec.role_descriptions)
@@ -281,8 +281,8 @@ class TestParser(MockTestCase):
             'General:',
             '  An administrator can always view this content')
 
-        self.assertEquals([('administrator', 'view')],
-                          spec.generals)
+        self.assertEqual([('administrator', 'view')],
+                         spec.generals)
 
     def test_fails_when_no_consumer_for_option(self):
         lines = (
@@ -292,10 +292,10 @@ class TestParser(MockTestCase):
         with self.assertRaises(ParsingError) as cm:
             self.parse_lines(*lines)
 
-        self.assertEquals('The option "bar" is not valid.',
-                          str(cm.exception))
+        self.assertEqual('The option "bar" is not valid.',
+                         str(cm.exception))
 
-        self.assertEquals(
+        self.assertEqual(
             None, self.parse_lines(*lines, silent=True),
             'Parser should not raise an exception when silent=True')
 
@@ -307,8 +307,8 @@ class TestParser(MockTestCase):
             '  An administrator can always perform the same actions '
             'as an editor.')
 
-        self.assertEquals([('administrator', 'editor')],
-                          spec.role_inheritance)
+        self.assertEqual([('administrator', 'editor')],
+                         spec.role_inheritance)
 
     def test_status_role_inheritance(self):
         spec = self.parse_lines(
@@ -317,11 +317,11 @@ class TestParser(MockTestCase):
             'Status Foo:',
             '  An administrator can always perform the same as a editor.')
 
-        self.assertEquals([],
-                          spec.role_inheritance)
+        self.assertEqual([],
+                         spec.role_inheritance)
 
-        self.assertEquals([('administrator', 'editor')],
-                          list(spec.states.values())[0].role_inheritance)
+        self.assertEqual([('administrator', 'editor')],
+                         list(spec.states.values())[0].role_inheritance)
 
     def test_worklist_viewers(self):
         spec = self.parse_lines(
@@ -331,7 +331,7 @@ class TestParser(MockTestCase):
             '  An Editor-In-Chief can access the worklist.',
             '  A reviewer can access the worklist.')
 
-        self.assertEquals(
+        self.assertEqual(
             ['editor-in-chief',
              'reviewer'],
             list(spec.states.values())[0].worklist_viewers)
@@ -351,7 +351,7 @@ class TestParser(MockTestCase):
                 'General:',
                 '  A reviewer can access the worklist.')
 
-        self.assertEquals(
+        self.assertEqual(
             str(cm.exception),
             'Worklist statements are not allowed in the "General" section.')
 
@@ -360,7 +360,7 @@ class TestConvertStatement(MockTestCase):
 
     def assert_statement(self, expected_result, text):
         result = convert_statement(LANGUAGES['en'], text)
-        self.assertEquals(
+        self.assertEqual(
             expected_result, result,
             'Wrong result when converting statement:' +
             ' expected "%s", got "%s"' % (expected_result, result) +
@@ -409,7 +409,7 @@ class TestConvertStatement(MockTestCase):
         with self.assertRaises(ParsingError) as cm:
             convert_statement(LANGUAGES['en'], 'This is not a statement.')
 
-        self.assertEquals(
+        self.assertEqual(
             'Unkown statement format: "This is not a statement."',
             str(cm.exception))
 

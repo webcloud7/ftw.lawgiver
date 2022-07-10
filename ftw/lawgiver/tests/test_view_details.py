@@ -17,22 +17,22 @@ TESTS_DIRECTORY = os.path.dirname(__file__)
 
 
 BAR_DEFINITION_XML = os.path.abspath(os.path.join(
-        TESTS_DIRECTORY,
-        'profiles', 'bar', 'workflows', 'wf-bar', 'definition.xml'))
+    TESTS_DIRECTORY,
+    'profiles', 'bar', 'workflows', 'wf-bar', 'definition.xml'))
 
 LOCALES_DIRECTORY = os.path.abspath(os.path.join(
-        TESTS_DIRECTORY, 'locales'))
+    TESTS_DIRECTORY, 'locales'))
 
 
 INVALID_WORKFLOW_DEFINITION_XML = os.path.abspath(os.path.join(
-        TESTS_DIRECTORY,
-        'profiles', 'spec-discovery', 'workflows', 'invalid-spec', 'definition.xml'))
+    TESTS_DIRECTORY,
+    'profiles', 'spec-discovery', 'workflows', 'invalid-spec', 'definition.xml'))
 
 
 BACKUP_FILES = [
     os.path.join(LOCALES_DIRECTORY, 'plone.pot'),
     os.path.join(LOCALES_DIRECTORY, 'en', 'LC_MESSAGES', 'plone.po'),
-    ]
+]
 
 
 def remove_definition_xml(path=BAR_DEFINITION_XML):
@@ -64,7 +64,7 @@ class TestBARSpecificationDetailsViewINSTALLED(TestCase):
     @browsing
     def test_details_view_heading(self, browser):
         specdetails.visit('Bar Workflow (wf-bar)')
-        self.assertEquals('Bar Workflow', plone.first_heading())
+        self.assertEqual('Bar Workflow', plone.first_heading())
 
     @browsing
     def test_spec_metadata_table(self, browser):
@@ -135,18 +135,18 @@ class TestBARSpecificationDetailsViewINSTALLED(TestCase):
 
         self.assertMultiLineEqual(
             '\n'.join((
-                    'msgid "Published"',
-                    'msgstr ""',
-                    '',
-                    'msgid "wf-bar--ROLE--Editor"',
-                    'msgstr ""',
-                    '',
-                    'msgid "wf-bar--ROLE--Manager"',
-                    'msgstr ""',
-                    '',
-                    'msgid "wf-bar--STATUS--published"',
-                    'msgstr ""',
-                    )),
+                'msgid "Published"',
+                'msgstr ""',
+                '',
+                'msgid "wf-bar--ROLE--Editor"',
+                'msgstr ""',
+                '',
+                'msgid "wf-bar--ROLE--Manager"',
+                'msgstr ""',
+                '',
+                'msgid "wf-bar--STATUS--published"',
+                'msgstr ""',
+            )),
             data,
             'The translation template content is wrong.')
 
@@ -157,18 +157,18 @@ class TestBARSpecificationDetailsViewINSTALLED(TestCase):
 
         self.assertMultiLineEqual(
             '\n'.join((
-                    'msgid "Published"',
-                    'msgstr "Published"',
-                    '',
-                    'msgid "wf-bar--ROLE--Editor"',
-                    'msgstr "editor"',
-                    '',
-                    'msgid "wf-bar--ROLE--Manager"',
-                    'msgstr "System Administrator"',
-                    '',
-                    'msgid "wf-bar--STATUS--published"',
-                    'msgstr "Published"',
-                    )),
+                'msgid "Published"',
+                'msgstr "Published"',
+                '',
+                'msgid "wf-bar--ROLE--Editor"',
+                'msgstr "editor"',
+                '',
+                'msgid "wf-bar--ROLE--Manager"',
+                'msgstr "System Administrator"',
+                '',
+                'msgid "wf-bar--STATUS--published"',
+                'msgstr "Published"',
+            )),
             data,
             'The default translation content is wrong.')
 
@@ -191,8 +191,8 @@ class TestBARSpecificationDetailsViewINSTALLED(TestCase):
             wftool = getToolByName(self.layer['portal'], 'portal_workflow')
             return wftool.get('wf-bar')
 
-        self.assertEquals('Bar Workflow', get_workflow().title,
-                          'Workflow title wrong after initial import.')
+        self.assertEqual('Bar Workflow', get_workflow().title,
+                         'Workflow title wrong after initial import.')
 
         # Change the workflow title in the database
         get_workflow().title = 'Wrong title'
@@ -200,7 +200,7 @@ class TestBARSpecificationDetailsViewINSTALLED(TestCase):
 
         # reimport with our button
         specdetails.button_write_and_import().click()
-        self.assertEquals(
+        self.assertEqual(
             'Bar Workflow', get_workflow().title,
             'Workflow title - write / reimport seems not working?')
 
@@ -229,9 +229,9 @@ class TestSpecificationDetailsViewBROKEN(TestCase):
     def test_heading_shows_wfid(self, browser):
         browser.exception_bubbling = True
         specdetails.visit('spec-based-workflow')
-        self.assertEquals('spec-based-workflow',
-                          plone.first_heading(),
-                          'Workflow title is wrong.')
+        self.assertEqual('spec-based-workflow',
+                         plone.first_heading(),
+                         'Workflow title is wrong.')
 
     @browsing
     def test_error_messages_shown(self, browser):
@@ -278,22 +278,22 @@ class TestSpecificationDetailsViewBROKEN(TestCase):
                 INVALID_WORKFLOW_DEFINITION_XML))
 
         self.maxDiff = None
-        self.assertEquals([], statusmessages.info_messages(),
-                          'Expecting no "info" portal messages.')
+        self.assertEqual([], statusmessages.info_messages(),
+                         'Expecting no "info" portal messages.')
 
-        self.assertEquals(['statusmessage_mtype_error Error: invalid-spec: '
-                           'Error while generating the'
-                           ' workflow: Action "viewX" is'
-                           ' neither action group nor transition.'],
-                          statusmessages.error_messages(),
-                          'Expecting only the workflow generation error.')
+        self.assertEqual(['statusmessage_mtype_error Error: invalid-spec: '
+                          'Error while generating the'
+                          ' workflow: Action "viewX" is'
+                          ' neither action group nor transition.'],
+                         statusmessages.error_messages(),
+                         'Expecting only the workflow generation error.')
 
         remove_definition_xml(INVALID_WORKFLOW_DEFINITION_XML)
 
 
 DESTRUCTIVE_WF_DIR = os.path.abspath(os.path.join(
-        os.path.dirname(__file__),
-        'profiles', 'destructive', 'workflows', 'destructive-workflow'))
+    os.path.dirname(__file__),
+    'profiles', 'destructive', 'workflows', 'destructive-workflow'))
 
 
 class TestDestructiveImport(TestCase):
@@ -302,7 +302,7 @@ class TestDestructiveImport(TestCase):
     def tearDown(self):
         paths = [
             os.path.join(DESTRUCTIVE_WF_DIR, 'specification.txt'),
-            os.path.join(DESTRUCTIVE_WF_DIR, 'definition.xml'),]
+            os.path.join(DESTRUCTIVE_WF_DIR, 'definition.xml'), ]
 
         for path in paths:
             if os.path.exists(path):
@@ -310,7 +310,7 @@ class TestDestructiveImport(TestCase):
 
     def use_spec(self, postfix):
         src = os.path.join(DESTRUCTIVE_WF_DIR, 'specification-%s.txt' % (
-                postfix))
+            postfix))
         dest = os.path.join(DESTRUCTIVE_WF_DIR, 'specification.txt')
 
         shutil.copyfile(src, dest)
@@ -318,7 +318,7 @@ class TestDestructiveImport(TestCase):
     def get_states(self):
         wftool = getToolByName(self.layer['portal'], 'portal_workflow')
         states = list(map(methodcaller('title'),
-                     wftool.get('destructive-workflow').states))
+                          wftool.get('destructive-workflow').states))
         return states
 
     def assert_current_states(self, *postfixes):
@@ -326,7 +326,7 @@ class TestDestructiveImport(TestCase):
         expected = ['Destructive-Workflow--Status--%s' % postfix
                     for postfix in postfixes]
 
-        self.assertEquals(
+        self.assertEqual(
             set(expected), set(states),
             'Workflow states of destructive workflow not as expected')
 
@@ -347,7 +347,7 @@ class TestDestructiveImport(TestCase):
         self.assert_current_states('Foo')
 
         # confirmation dialog displayed
-        self.assertEquals(
+        self.assertEqual(
             'Importing this workflow renames or removes states.'
             ' Changing states can reset the workflow status of affected'
             ' objects to the initial state.',

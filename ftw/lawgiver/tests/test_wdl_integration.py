@@ -22,14 +22,14 @@ class TestExampleSpecification(MockTestCase):
             self.spec = parser(file_, path=path)
 
     def test_title(self):
-        self.assertEquals('My Custom Workflow', self.spec.title)
+        self.assertEqual('My Custom Workflow', self.spec.title)
 
     def test_description(self):
-        self.assertEquals('A three state publication workflow',
-                          self.spec.description)
+        self.assertEqual('A three state publication workflow',
+                         self.spec.description)
 
     def test_states(self):
-        self.assertEquals(
+        self.assertEqual(
             {'Private': u'<Status "Private">',
              'Pending': u'<Status "Pending">',
              'Published': u'<Status "Published">'},
@@ -39,7 +39,7 @@ class TestExampleSpecification(MockTestCase):
     def test_private_statements(self):
         private = self.spec.states['Private']
 
-        self.assertEquals(
+        self.assertEqual(
             [('editör', 'view'),
              ('editör', 'edit'),
              ('editör', 'delete'),
@@ -56,7 +56,7 @@ class TestExampleSpecification(MockTestCase):
     def test_private_worklist_viewers(self):
         pending = self.spec.states['Private']
 
-        self.assertEquals(
+        self.assertEqual(
             [],
 
             pending.worklist_viewers)
@@ -64,7 +64,7 @@ class TestExampleSpecification(MockTestCase):
     def test_pending_statements(self):
         pending = self.spec.states['Pending']
 
-        self.assertEquals(
+        self.assertEqual(
             [('editör', 'view'),
              ('editör', 'add'),
              ('editör', 'retract'),
@@ -80,7 +80,7 @@ class TestExampleSpecification(MockTestCase):
     def test_pending_worklist_viewers(self):
         pending = self.spec.states['Pending']
 
-        self.assertEquals(
+        self.assertEqual(
             ['editor-in-chief'],
 
             pending.worklist_viewers)
@@ -88,7 +88,7 @@ class TestExampleSpecification(MockTestCase):
     def test_published_statements(self):
         published = self.spec.states['Published']
 
-        self.assertEquals(
+        self.assertEqual(
             [('editör', 'view'),
              ('editör', 'add'),
              ('editör', 'retract'),
@@ -102,18 +102,18 @@ class TestExampleSpecification(MockTestCase):
     def test_published_worklist_viewers(self):
         pending = self.spec.states['Published']
 
-        self.assertEquals(
+        self.assertEqual(
             [],
 
             pending.worklist_viewers)
 
     def test_initial_state(self):
-        self.assertEquals(self.spec.states['Private'],
-                          self.spec.get_initial_status(),
-                          'Wrong initial status')
+        self.assertEqual(self.spec.states['Private'],
+                         self.spec.get_initial_status(),
+                         'Wrong initial status')
 
     def test_transitions(self):
-        self.assertEquals(
+        self.assertEqual(
             set(['<Transition "publish" ["Private" => "Published"]>',
                  '<Transition "submit for publication" ["Private" => "Pending"]>',
                  '<Transition "reject" ["Pending" => "Private"]>',
@@ -124,7 +124,7 @@ class TestExampleSpecification(MockTestCase):
             set(map(six.text_type, self.spec.transitions)))
 
     def test_role_mappings(self):
-        self.assertEquals(
+        self.assertEqual(
             {'editor-in-chief': 'Reviewer',
              'editör': 'Editor',
              'everyone': 'Anonymous',
@@ -132,11 +132,11 @@ class TestExampleSpecification(MockTestCase):
             self.spec.role_mapping)
 
     def test_visible_roles(self):
-        self.assertEquals(['editör', 'editor-in-chief'],
-                          self.spec.visible_roles)
+        self.assertEqual(['editör', 'editor-in-chief'],
+                         self.spec.visible_roles)
 
     def test_general_statements(self):
-        self.assertEquals(
+        self.assertEqual(
             [('administrator', 'view'),
              ('administrator', 'edit'),
              ('administrator', 'delete'),

@@ -25,7 +25,7 @@ class TestSharingRoleTranslation(TestCase):
         document = create(Builder('document'))
         sharing.visit(document)
 
-        self.assertEquals(
+        self.assertEqual(
             ['Can add', 'Can edit', 'Can review', 'Can view'],
             sharing.role_labels())
 
@@ -38,7 +38,7 @@ class TestSharingRoleTranslation(TestCase):
         document = create(Builder('document'))
         sharing.visit(document)
 
-        self.assertEquals(
+        self.assertEqual(
             ['Can add', 'Can view', 'editor', 'editor-in-chief'],
             sharing.role_labels())
 
@@ -51,7 +51,7 @@ class TestSharingRoleTranslation(TestCase):
         document = create(Builder('document'))
         sharing.visit_api(document)
 
-        self.assertEquals(
+        self.assertEqual(
             ['Can add', 'Can view', 'editor', 'editor-in-chief'],
             sharing.role_labels())
 
@@ -68,5 +68,5 @@ class TestSharingRoleTranslation(TestCase):
         adapter = getMultiAdapter((view, document.REQUEST),
                                   IDynamicRoleAdapter,
                                   name='Reader')
-        self.assertEquals('role-translation--ROLE--Reader',
-                          adapter.get_title())
+        self.assertEqual('role-translation--ROLE--Reader',
+                         adapter.get_title())

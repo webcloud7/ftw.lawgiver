@@ -67,7 +67,7 @@ class TestWorkflowSpecificationDiscovery(TestCase):
         result = list(map(make_path_relative, component.discover()))
 
         prefix = 'profiles/spec-discovery/workflows/'
-        self.assertEquals(
+        self.assertEqual(
             set([prefix + 'spec-based-workflow/specification.txt',
                  prefix + 'another-spec-based-workflow/specification.txt',
                  prefix + 'invalid-spec/specification.txt']),
@@ -84,7 +84,7 @@ class TestWorkflowSpecificationDiscovery(TestCase):
         hash_ = component.hash(path)
         self.assertNotEquals(path, hash_, 'The hash should not be the path.')
 
-        self.assertEquals(
+        self.assertEqual(
             path, component.unhash(hash_),
             'Hashing and unhashing a path does not result in the same path.')
 
@@ -97,7 +97,7 @@ class TestWorkflowSpecificationDiscovery(TestCase):
                                     IWorkflowSpecificationDiscovery)
 
         hash_ = component.hash('/tmp')
-        self.assertEquals(
+        self.assertEqual(
             None, component.unhash(hash_),
             'The unhashing method should not accept hashed paths which'
             ' are not registered as specification file.')

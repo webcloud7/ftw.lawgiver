@@ -29,7 +29,7 @@ class TestRoleDirective(TestCase):
         setSite(None)
 
     def test_directive_registers_role_utility(self):
-        self.assertEquals(
+        self.assertEqual(
             None, queryUtility(ISharingPageRole, name='Integrator'),
             'Unexpectly found role utility "Integrator" before registering.')
 
@@ -44,7 +44,7 @@ class TestRoleDirective(TestCase):
                         'Role utility does not implement ISharingPageRole')
 
     def test_directive_registers_role_adapter(self):
-        self.assertEquals(
+        self.assertEqual(
             None, queryMultiAdapter((None, None), IDynamicRoleAdapter,
                                     name='Integrator'),
             'Unexpectly found role adapter "Integrator" before registering.')
@@ -70,7 +70,7 @@ class TestRoleDirective(TestCase):
             '    />')
 
         role_utility = queryUtility(ISharingPageRole, name='Integrator')
-        self.assertEquals(permission, role_utility.required_permission)
+        self.assertEqual(permission, role_utility.required_permission)
 
     def test_default_permission_is_set_properly(self):
         self.load_zcml(
@@ -79,7 +79,7 @@ class TestRoleDirective(TestCase):
             '    />')
 
         role_utility = queryUtility(ISharingPageRole, name='Integrator')
-        self.assertEquals('Sharing page: Delegate Integrator role',
+        self.assertEqual('Sharing page: Delegate Integrator role',
                           role_utility.required_permission)
 
     def load_zcml(self, *lines):

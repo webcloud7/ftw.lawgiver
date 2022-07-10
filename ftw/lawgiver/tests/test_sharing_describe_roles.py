@@ -122,8 +122,8 @@ class TestSharingDescribeRoles(TestCase):
         description = browser.css('.role-description').first.text
 
         # This description is set through translations in the Plone domain.
-        self.assertEquals('The editor-in-chief reviews and publishes content.',
-                          description)
+        self.assertEqual('The editor-in-chief reviews and publishes content.',
+                         description)
 
     @browsing
     def test_role_description_is_not_displayed_when_missing(self, browser):
@@ -164,5 +164,5 @@ class TestSharingDescribeRoles(TestCase):
                               # in the sharing view.
                               data={'role': 'Reviewer'})
 
-        self.assertEquals('Could not find any information about this role.',
-                          browser.css('p.error').first.text)
+        self.assertEqual('Could not find any information about this role.',
+                         browser.css('p.error').first.text)

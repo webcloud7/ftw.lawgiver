@@ -33,6 +33,6 @@ class TestActionGroupTranslations(TestCase):
             if 'add folders' in untranslated_groups:
                 untranslated_groups.remove('add folders')
 
-        self.assertEquals(
+        self.assertEqual(
             expected, untranslated,
             'There action groups which are not translated.')

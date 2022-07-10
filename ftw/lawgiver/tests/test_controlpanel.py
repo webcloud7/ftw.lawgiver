@@ -16,4 +16,4 @@ class TestControlPanel(TestCase):
         self.assertTrue(links, 'The "Lawgiver" control panel link is missing.')
 
         links.first.click()
-        self.assertEquals('lawgiver-list-specs', plone.view())
+        self.assertEqual('lawgiver-list-specs', plone.view())
