@@ -84,6 +84,8 @@ class TestUpdateSpecifications(XMLDiffTestCase):
 
         run_command('git init .', package.package_path)
         run_command('git add .', package.package_path)
+        run_command('git config user.email "you@example.com"', package.package_path)
+        run_command('git config --global user.name "Your Name"', package.package_path)
         run_command('git commit --no-gpg-sign -m "init"', package.package_path)
 
         with package.zcml_loaded(self.layer['configurationContext']):
