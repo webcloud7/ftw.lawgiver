@@ -17,8 +17,8 @@ class TestDynamicRolesUtility(TestCase):
         utility = getUtility(ISharingPageRole, name='Reader')
         role_adapter = utility.get_role_adapter()
         self.assertTrue(role_adapter)
-        self.assertEquals(self.layer['portal'], role_adapter.context)
+        self.assertEqual(self.layer['portal'], role_adapter.context)
 
     def test_role_title_when_fallback_necessary(self):
         utility = getUtility(ISharingPageRole, name='Reader')
-        self.assertEquals('Can view', utility.title.default)
+        self.assertEqual('Can view', utility.title.default)

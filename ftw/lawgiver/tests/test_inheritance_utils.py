@@ -19,7 +19,7 @@ class TestMergeRoleInheritance(TestCase):
                              role_mapping=ROLE_MAPPING)
         status = Status('Private', [])
 
-        self.assertEquals(
+        self.assertEqual(
             [('Manager', 'Anonymous')],
             merge_role_inheritance(spec, status))
 
@@ -29,7 +29,7 @@ class TestMergeRoleInheritance(TestCase):
         status = Status('Private', [],
                         role_inheritance=[('admin', 'writer')])
 
-        self.assertEquals(
+        self.assertEqual(
             [('Manager', 'Editor')],
             merge_role_inheritance(spec, status))
 
@@ -40,7 +40,7 @@ class TestMergeRoleInheritance(TestCase):
         status = Status('Private', [],
                         role_inheritance=[('admin', 'writer')])
 
-        self.assertItemsEqual(
+        self.assertCountEqual(
             [('Manager', 'Anonymous'),
              ('Manager', 'Editor')],
             merge_role_inheritance(spec, status))
@@ -49,25 +49,25 @@ class TestMergeRoleInheritance(TestCase):
 class TestGetRolesInheritingFrom(TestCase):
 
     def test_docstring_example(self):
-        #A inherits from B
-        #B inherits from C
+        # A inherits from B
+        # B inherits from C
         role_inheritance = (('A', 'B'), ('B', 'C'))
-        self.assertEquals(['A'],
-                          get_roles_inheriting_from(['A'], role_inheritance))
-        self.assertEquals(['A', 'B'],
-                          get_roles_inheriting_from(['B'], role_inheritance))
-        self.assertEquals(['A', 'B', 'C'],
-                          get_roles_inheriting_from(['C'], role_inheritance))
+        self.assertEqual(['A'],
+                         get_roles_inheriting_from(['A'], role_inheritance))
+        self.assertEqual(['A', 'B'],
+                         get_roles_inheriting_from(['B'], role_inheritance))
+        self.assertEqual(['A', 'B', 'C'],
+                         get_roles_inheriting_from(['C'], role_inheritance))
 
     def test_basic_resolution(self):
-        self.assertEquals(
+        self.assertEqual(
             ['Anonymous', 'Manager'],
             get_roles_inheriting_from(
                 ['Anonymous'],
                 [('Manager', 'Anonymous')]))
 
     def test_recursive_resolution(self):
-        self.assertEquals(
+        self.assertEqual(
             ['Anonymous', 'Contributor', 'Editor', 'Manager'],
 
             get_roles_inheriting_from(
@@ -77,16 +77,16 @@ class TestGetRolesInheritingFrom(TestCase):
                  ('Editor', 'Contributor')]))
 
     def test_basic(self):
-        self.assertEquals(
+        self.assertEqual(
             set(['Foo', 'Bar']),
             set(get_roles_inheriting_from(['Foo'], [('Bar', 'Foo')])))
 
     def test_not_matching(self):
-        self.assertEquals(
+        self.assertEqual(
             set(['Foo']),
             set(get_roles_inheriting_from(['Foo'], [('Bar', 'Baz')])))
 
-        self.assertEquals(
+        self.assertEqual(
             set(['Foo']),
             set(get_roles_inheriting_from(['Foo'], [('Foo', 'Bar')])))
 
@@ -94,19 +94,19 @@ class TestGetRolesInheritingFrom(TestCase):
         expected = set(['Foo', 'Bar', 'Baz'])
         roles = ['Foo']
 
-        self.assertEquals(
+        self.assertEqual(
             expected,
             set(get_roles_inheriting_from(
-                    roles,
-                    [('Bar', 'Foo'),
-                     ('Baz', 'Bar')])))
+                roles,
+                [('Bar', 'Foo'),
+                 ('Baz', 'Bar')])))
 
-        self.assertEquals(
+        self.assertEqual(
             expected,
             set(get_roles_inheriting_from(
-                    roles,
-                    [('Baz', 'Bar'),
-                     ('Bar', 'Foo')])))
+                roles,
+                [('Baz', 'Bar'),
+                 ('Bar', 'Foo')])))
 
     def test_circular(self):
         expected = set(['Foo', 'Bar', 'Baz'])
@@ -115,7 +115,7 @@ class TestGetRolesInheritingFrom(TestCase):
                             ('Bar', 'Baz'),
                             ('Baz', 'Foo')]
 
-        self.assertEquals(
+        self.assertEqual(
             expected,
             set(get_roles_inheriting_from(roles, role_inheritance)))
 
@@ -127,24 +127,24 @@ class TestGetRolesInheritedBy(TestCase):
         # B inherits from C
         role_inheritance = (('A', 'B'), ('B', 'C'))
 
-        self.assertEquals(['A', 'B', 'C'],
-                          get_roles_inherited_by(['A'], role_inheritance))
-        self.assertEquals(['B', 'C'],
-                          get_roles_inherited_by(['B'], role_inheritance))
-        self.assertEquals(['C'],
-                          get_roles_inherited_by(['C'], role_inheritance))
+        self.assertEqual(['A', 'B', 'C'],
+                         get_roles_inherited_by(['A'], role_inheritance))
+        self.assertEqual(['B', 'C'],
+                         get_roles_inherited_by(['B'], role_inheritance))
+        self.assertEqual(['C'],
+                         get_roles_inherited_by(['C'], role_inheritance))
 
     def test_basic(self):
-        self.assertItemsEqual(
+        self.assertCountEqual(
             ['Foo', 'Bar'],
             get_roles_inherited_by(['Bar'], [('Bar', 'Foo')]))
 
     def test_not_matching(self):
-        self.assertEquals(
+        self.assertEqual(
             ['Foo'],
             get_roles_inherited_by(['Foo'], [('Bar', 'Baz')]))
 
-        self.assertEquals(
+        self.assertEqual(
             ['Foo'],
             get_roles_inherited_by(['Foo'], [('Bar', 'Foo')]))
 
@@ -152,14 +152,14 @@ class TestGetRolesInheritedBy(TestCase):
         expected = ['Foo', 'Bar', 'Baz']
         roles = ['Foo']
 
-        self.assertEquals(
+        self.assertEqual(
             expected,
             get_roles_inherited_by(
                 roles,
                 [('Foo', 'Bar'),
                  ('Bar', 'Baz')]))
 
-        self.assertEquals(
+        self.assertEqual(
             expected,
             get_roles_inherited_by(
                 roles,
@@ -173,6 +173,6 @@ class TestGetRolesInheritedBy(TestCase):
                             ('Bar', 'Baz'),
                             ('Baz', 'Foo')]
 
-        self.assertEquals(
+        self.assertEqual(
             expected,
             set(get_roles_inherited_by(roles, role_inheritance)))

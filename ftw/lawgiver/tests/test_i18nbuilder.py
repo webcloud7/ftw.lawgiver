@@ -18,49 +18,49 @@ EN_PO_PATH = os.path.join(
 
 
 SIMPLE_WORKFLOW_MESSAGES = r'''
-#. Default: "Private"
+#.Default: "Private"
 #: ftw/lawgiver/tests/assets/i18nbuilder/profiles/default/workflows/simple_workflow/specification.txt
 msgid "Private"
 msgstr "Private"
 
-#. Default: "Published"
+#.Default: "Published"
 #: ftw/lawgiver/tests/assets/i18nbuilder/profiles/default/workflows/simple_workflow/specification.txt
 msgid "Published"
 msgstr "Published"
 
-#. Default: "püblish"
+#.Default: "püblish"
 #: ftw/lawgiver/tests/assets/i18nbuilder/profiles/default/workflows/simple_workflow/specification.txt
 msgid "püblish"
 msgstr "püblish"
 
-#. Default: "editor"
+#.Default: "editor"
 #: ftw/lawgiver/tests/assets/i18nbuilder/profiles/default/workflows/simple_workflow/specification.txt
 msgid "simple_workflow--ROLE--Editor"
 msgstr "editor"
 
-#. Default: "An \"Editor\" writes articles."
+#.Default: "An \"Editor\" writes articles."
 #: ftw/lawgiver/tests/assets/i18nbuilder/profiles/default/workflows/simple_workflow/specification.txt
 msgid "simple_workflow--ROLE-DESCRIPTION--Editor"
 msgstr "An \"Editor\" writes articles."
 
-#. Default: "Private"
+#.Default: "Private"
 #: ftw/lawgiver/tests/assets/i18nbuilder/profiles/default/workflows/simple_workflow/specification.txt
 msgid "simple_workflow--STATUS--private"
 msgstr "Private"
 
-#. Default: "Published"
+#.Default: "Published"
 #: ftw/lawgiver/tests/assets/i18nbuilder/profiles/default/workflows/simple_workflow/specification.txt
 msgid "simple_workflow--STATUS--published"
 msgstr "Published"
 
-#. Default: "püblish"
+#.Default: "püblish"
 #: ftw/lawgiver/tests/assets/i18nbuilder/profiles/default/workflows/simple_workflow/specification.txt
 msgid "simple_workflow--TRANSITION--publish--private_published"
 msgstr "püblish"
 '''.strip()
 
 OLD_SIMPLE_WORKFLOW_MESSAGES = r'''
-#. Default: "No Longer Available"
+#.Default: "No Longer Available"
 #: ftw/lawgiver/tests/assets/i18nbuilder/profiles/default/workflows/simple_workflow/specification.txt
 msgid "No Longer Available"
 msgstr "No Longer Available"
@@ -106,15 +106,15 @@ class TestI18nBuilder(TestCase):
         with self.assertRaises(ValueError) as cm:
             I18nBuilder('/tmp/invalid/path/specification.txt')
 
-        self.assertEquals('Path "/tmp/invalid/path/specification.txt"'
-                          ' does not exist.',
-                          str(cm.exception))
+        self.assertEqual('Path "/tmp/invalid/path/specification.txt"'
+                         ' does not exist.',
+                         str(cm.exception))
 
     def test_get_locales_directory(self):
         builder = I18nBuilder(self.simple_workflow_spec_path)
         locales_path = builder.get_locales_directory_path()
-        self.assertEquals(os.path.join(I18N_ASSETS, 'locales'),
-                          locales_path)
+        self.assertEqual(os.path.join(I18N_ASSETS, 'locales'),
+                         locales_path)
 
     def test_get_locales_directory_not_found_returns_None(self):
         asset_path = os.path.join(os.path.dirname(__file__),

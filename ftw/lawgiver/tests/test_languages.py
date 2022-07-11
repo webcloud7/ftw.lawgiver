@@ -23,7 +23,7 @@ class TestCompareTranslatedSpecResults(EqualityTestCase):
             if 'Editor-In-Chief' not in spec.role_descriptions:
                 failures.append(path)
 
-        self.assertEquals(
+        self.assertEqual(
             [], failures,
             'These language specs are not defining a role description for'
             ' the "Editor-In-Chief" role.')

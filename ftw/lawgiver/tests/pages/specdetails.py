@@ -2,6 +2,7 @@ from ftw.testbrowser import browser
 from functools import partial
 from operator import methodcaller
 from plone.app.testing import SITE_OWNER_NAME
+from six.moves import map
 import os.path
 
 
@@ -22,8 +23,11 @@ def visit(specification_title):
 def metadata():
     replace_path_in_row = partial(map, methodcaller('replace',
                                                     TESTS_DIRECTORY, '....'))
-    return map(replace_path_in_row,
-               browser.css('table.spec-metadata').first.lists())
+
+    def replace_path_in_row(row):
+        return list(map(methodcaller('replace', TESTS_DIRECTORY, '....'), row))
+    return list(map(replace_path_in_row,
+                    browser.css('table.spec-metadata').first.lists()))
 
 
 def specification_text():
@@ -31,9 +35,8 @@ def specification_text():
 
 
 def action_groups():
-    return dict(map(lambda action_group: (action_group[0].text,
-                                          action_group[1].css('li').text),
-                    browser.css('dl.permission-mapping dd dl').first.items()))
+    return dict([(action_group[0].text,
+                  action_group[1].css('li').text) for action_group in list(browser.css('dl.permission-mapping dd dl').first.items())])
 
 
 def ignored_permissions():

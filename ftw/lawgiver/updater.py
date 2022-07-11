@@ -1,3 +1,4 @@
+from __future__ import print_function
 from collections import defaultdict
 from ftw.lawgiver import _
 from ftw.lawgiver.exceptions import UpgradeStepCreationError
@@ -11,18 +12,18 @@ from lxml import etree
 from operator import attrgetter
 from path import Path
 from Products.statusmessages.interfaces import IStatusMessage
+from six.moves import map
 from ZODB.POSException import ConflictError
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.component.hooks import getSite
 from zope.i18n import translate
-from zope.interface import implements
+from zope.interface import implementer
 import os.path
 import pkg_resources
 import shlex
 import subprocess
 import sys
-
 
 try:
     pkg_resources.get_distribution('ftw.upgrade')
@@ -51,11 +52,11 @@ class ConsoleMessageFormatter(object):
         else:
             stream = sys.stdout
 
-        print >>stream, translate(message)
+        print(translate(message), file=stream)
 
 
+@implementer(IUpdater)
 class Updater(object):
-    implements(IUpdater)
 
     def update_all_specifications(self, output_formatter=None):
         discovery = getMultiAdapter((getSite(), getSite().REQUEST),
@@ -117,13 +118,13 @@ class Updater(object):
                 if not wf_names:
                     continue
 
-                upgrade_module.write_bytes(
-                    upgrade_module.bytes() +
-                    '        self.update_workflow_security(\n'
-                    '            [\'{}\'],\n'
-                    '            reindex_security={!r})\n'
-                    .format(('\',\n             \'').join(wf_names),
-                            flag))
+                code = bytes(
+                        '        self.update_workflow_security(\n'
+                        '            ["{}"],\n'
+                        '            reindex_security={!r})\n'
+                        .format((",\n             ").join(wf_names),
+                                flag), encoding='utf-8')
+                upgrade_module.write_bytes(upgrade_module.bytes() + code)
 
     def write_workflow(self, specification_path, output_formatter=None):
         specification = self._get_specification(
@@ -137,7 +138,7 @@ class Updater(object):
                       specification)
         except ConflictError:
             raise
-        except Exception, exc:
+        except Exception as exc:
             if not output_formatter:
                 raise
 
@@ -147,11 +148,11 @@ class Updater(object):
                 _(u'error_while_generating_workflow',
                   default=u'${id}: Error while generating'
                   u' the workflow: ${msg}',
-                  mapping={'msg': str(exc).decode('utf-8'),
+                  mapping={'msg': str(exc),
                            'id': self._workflow_id(specification_path)}))
             return False
 
-        with open(self._definition_path(specification_path), 'w+') as wf_file:
+        with open(self._definition_path(specification_path), 'bw+') as wf_file:
             generator.write(wf_file)
 
         if output_formatter:
@@ -189,7 +190,7 @@ class Updater(object):
                 return parser(specfile, path=specification_path)
         except ConflictError:
             raise
-        except Exception, exc:
+        except Exception as exc:
             if not output_formatter:
                 raise
 
@@ -199,7 +200,7 @@ class Updater(object):
                 _(u'error_parsing_error',
                   default=u'${id}: The specification file could not be'
                   u' parsed: ${error}',
-                  mapping={'error': str(exc).decode('utf-8'),
+                  mapping={'error': str(exc),
                            'id': self._workflow_id(specification_path)}))
             return None
 
@@ -235,9 +236,9 @@ class Updater(object):
         doc = etree.fromstring(workflow_definition)
         result = {}
         for state_tag in doc.xpath('//state'):
-            result[state_tag.attrib['state_id']] = map(
+            result[state_tag.attrib['state_id']] = list(map(
                 attrgetter('text'),
                 state_tag.xpath(
-                    'permission-map[@name="View"]/permission-role'))
+                    'permission-map[@name="View"]/permission-role')))
 
         return result

@@ -1,13 +1,13 @@
 from zope.configuration.interfaces import InvalidToken
-from zope.interface import implements
+from zope.interface import implementer
 from zope.schema import List
 from zope.schema import TextLine
 from zope.schema import ValidationError
 from zope.schema.interfaces import IFromUnicode
 
 
+@implementer(IFromUnicode)
 class CommaSeparatedText(List):
-    implements(IFromUnicode)
 
     def __init__(self, *args, **kwargs):
         if 'value_type' not in kwargs:
@@ -22,7 +22,7 @@ class CommaSeparatedText(List):
             for s in u.split(','):
                 try:
                     v = vt.fromUnicode(s).strip()
-                except ValidationError, v:
+                except ValidationError as v:
                     raise InvalidToken("%s in %s" % (v, u))
                 else:
                     values.append(v)

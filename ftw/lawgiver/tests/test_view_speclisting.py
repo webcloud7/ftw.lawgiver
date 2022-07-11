@@ -5,6 +5,7 @@ from ftw.testbrowser import browsing
 from ftw.testbrowser.pages import statusmessages
 from operator import methodcaller
 from plone.app.testing import SITE_OWNER_NAME
+from six.moves import map
 from unittest import TestCase
 import os.path
 import shutil
@@ -12,12 +13,11 @@ import shutil
 
 TESTS_PATH = os.path.dirname(__file__)
 
-BACKUP_FILES = map(
-    lambda path: os.path.join(TESTS_PATH, path), [
+BACKUP_FILES = [os.path.join(TESTS_PATH, path) for path in [
         'profiles/custom-workflow/workflows/my_custom_workflow/definition.xml',
         'locales/plone.pot',
         'locales/en/LC_MESSAGES/plone.po',
-        ])
+        ]]
 
 
 class TestSpecificationListingsView(TestCase):
@@ -37,7 +37,7 @@ class TestSpecificationListingsView(TestCase):
     @browsing
     def test_listing_spec_order(self, browser):
         browser.login(SITE_OWNER_NAME).visit(view='lawgiver-list-specs')
-        self.assertItemsEqual(
+        self.assertCountEqual(
             ['Bar Workflow (wf-bar)',
              'Foo Workflow (wf-foo)',
              'Invalid Workflow (invalid-spec)',
@@ -51,7 +51,7 @@ class TestSpecificationListingsView(TestCase):
     def test_listing_spec_descriptions(self, browser):
         browser.login(SITE_OWNER_NAME).visit(view='lawgiver-list-specs')
 
-        self.assertEquals(
+        self.assertEqual(
             {'another-spec-based-workflow': '',
              'My Custom Workflow (my_custom_workflow)':
                  'A three state publication workflow',
@@ -71,17 +71,20 @@ class TestSpecificationListingsView(TestCase):
         links = [link.attrib.get('href')
                  for link in browser.css('.specifications dt a')]
 
-        self.assertEquals(
+        self.assertEqual(
             sorted(links), sorted(set(links)),
             'There are ambiguous spec links. Is the hashing wrong?')
 
     @browsing
     def test_update_all_sepcifications(self, browser):
         browser.login(SITE_OWNER_NAME).visit(view='lawgiver-list-specs')
+        browser.exception_bubbling = True
         browser.find('Update all specifications').click()
 
-        infos = map(methodcaller('replace', TESTS_PATH, '...'),
-                    statusmessages.messages()['info'])
+        infos = list(map(methodcaller('replace', TESTS_PATH, '...'),
+                     statusmessages.messages()['statusmessage-info']))
+        infos = list(map(methodcaller('replace', 'statusmessage_mtype_info Info: ', ''),
+                     infos))
         self.assertIn(
             'role-translation: The workflow was generated to .../profiles'
             '/role-translation/workflows/role-translation/definition.xml.',
@@ -93,6 +96,7 @@ class TestSpecificationListingsView(TestCase):
             infos)
 
         self.assertIn(
-            'invalid-spec: Error while generating the workflow:'
+            'statusmessage_mtype_error Error: invalid-spec: Error while '
+            'generating the workflow:'
             ' Action "viewX" is neither action group nor transition.',
-            statusmessages.messages()['error'])
+            statusmessages.messages()['statusmessage-error'])

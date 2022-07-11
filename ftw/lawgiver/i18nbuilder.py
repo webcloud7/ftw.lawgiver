@@ -5,6 +5,8 @@ from i18ndude.catalog import MessageCatalog
 from i18ndude.catalog import POWriter
 from operator import attrgetter
 from path import Path
+from six.moves import filter
+from six.moves import map
 from zope.component import getUtility
 import os.path
 
@@ -120,13 +122,13 @@ class I18nBuilder(object):
 
             return False
 
-        delete_candidates = map(attrgetter('msgid'),
-                                filter(is_delete_candidate,
-                                       catalog.values()))
+        delete_candidates = list(map(attrgetter('msgid'),
+                                list(filter(is_delete_candidate,
+                                       list(catalog.values())))))
 
         for msgid, msgstr in translations.items():
-            msgid = msgid.decode('utf-8').replace('"', '\\"')
-            msgstr = msgstr.decode('utf-8').replace('"', '\\"')
+            msgid = msgid.replace('"', '\\"')
+            msgstr = msgstr.replace('"', '\\"')
 
             if msgid in delete_candidates:
                 delete_candidates.remove(msgid)
@@ -137,9 +139,7 @@ class I18nBuilder(object):
                 if self.relative_specification_path not in msg.references:
                     msg.references.append(self.relative_specification_path)
 
-                msg.automatic_comments = filter(
-                    lambda text: not text.startswith('Default: '),
-                    msg.automatic_comments)
+                msg.automatic_comments = [text for text in msg.automatic_comments if not text.startswith('Default: ')]
                 msg.automatic_comments.append(u'Default: "{0}"'.format(msgstr))
 
             else:

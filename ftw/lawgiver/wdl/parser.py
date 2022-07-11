@@ -5,11 +5,11 @@ from ftw.lawgiver.wdl.languages import LANGUAGES
 from ftw.lawgiver.wdl.specification import Specification
 from ftw.lawgiver.wdl.specification import Status
 from ftw.lawgiver.wdl.specification import Transition
-from ordereddict import OrderedDict
-from zope.interface import implements
-import ConfigParser
+from zope.interface import implementer
+import six.moves.configparser
 import os.path
 import re
+from six.moves import map
 
 
 class LowerCaseString(str):
@@ -62,10 +62,8 @@ def convert_statement(language, statement):
 
     raise ParsingError('Unkown statement format: "%s"' % statement)
 
-
+@implementer(IWorkflowSpecificationParser)
 class SpecificationParser(object):
-
-    implements(IWorkflowSpecificationParser)
 
     def __init__(self):
         self._config = None
@@ -74,7 +72,7 @@ class SpecificationParser(object):
     def __call__(self, stream, path=None, silent=False):
         try:
             return self._parse(stream, path=path)
-        except (ParsingError, ConfigParser.ParsingError):
+        except (ParsingError, six.moves.configparser.ParsingError):
             if silent:
                 return None
             else:
@@ -92,7 +90,7 @@ class SpecificationParser(object):
         """Parse `stream` into a configparser `self._config` object.
         """
 
-        self._config = ConfigParser.RawConfigParser()
+        self._config = six.moves.configparser.RawConfigParser()
         self._config.optionxform = str  # do not lowercase tokens
         self._config.readfp(stream)
 
@@ -108,7 +106,7 @@ class SpecificationParser(object):
 
         sectionname = self._config.sections()[0]
         specargs = {'title': sectionname,
-                    'states': OrderedDict(),
+                    'states': {},
                     'language': self.language}
 
         for name, value in self._config.items(sectionname):
@@ -148,7 +146,7 @@ class SpecificationParser(object):
         worklist_viewers = []
 
         if value.strip():
-            lines = map(str.strip, value.strip().split('\n'))
+            lines = list(map(str.strip, value.strip().split('\n')))
             for line in lines:
                 type_, item = convert_statement(self.language, line)
                 if type_ == PERMISSION_STATEMENT:
@@ -164,7 +162,7 @@ class SpecificationParser(object):
 
     @consumer(keywords.TRANSITIONS)
     def _convert_transitions(self, match, value, specargs):
-        raw = map(str.strip, value.strip().split('\n'))
+        raw = list(map(str.strip, value.strip().split('\n')))
         transitions = specargs['transitions'] = []
 
         for line in raw:
@@ -187,7 +185,7 @@ class SpecificationParser(object):
 
     @consumer(keywords.ROLE_MAPPING)
     def _convert_role_mapping(self, match, value, specargs):
-        lines = map(str.strip, value.strip().split('\n'))
+        lines = list(map(str.strip, value.strip().split('\n')))
         xpr = re.compile(r'^([^=]*?) ?=> ?(.*)$')
         mapping = specargs['role_mapping'] = {}
 
@@ -202,8 +200,7 @@ class SpecificationParser(object):
 
     @consumer(keywords.VISIBLE_ROLES)
     def _convert_visible_roles(self, match, value, specargs):
-        lines = map(lambda line: line.strip().lower(),
-                    value.strip().split('\n'))
+        lines = [line.strip().lower() for line in value.strip().split('\n')]
         specargs['visible_roles'] = lines
 
     @consumer(keywords.ROLE_DESCRIPTION)
@@ -220,7 +217,7 @@ class SpecificationParser(object):
         statements = specargs['generals'] = []
         role_inheritance = specargs['role_inheritance'] = []
 
-        lines = map(str.strip, value.strip().split('\n'))
+        lines = list(map(str.strip, value.strip().split('\n')))
         for line in lines:
             type_, item = convert_statement(self.language, line)
             if type_ == PERMISSION_STATEMENT:
@@ -269,7 +266,7 @@ class SpecificationParser(object):
 
         options_string = match.group(1)
         for option_string in map(str.strip, options_string.split(';')):
-            option, value = map(str.strip, options_string.split('=>'))
+            option, value = list(map(str.strip, options_string.split('=>')))
             options[option] = value
 
         return options

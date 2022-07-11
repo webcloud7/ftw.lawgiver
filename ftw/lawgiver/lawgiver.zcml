@@ -106,24 +106,10 @@
 
 
 
-    <configure zcml:condition="installed collective.deletepermission">
-      <lawgiver:map_permissions
-          action_group="add"
-          permissions="Delete objects"
-          />
-
-      <lawgiver:map_permissions
-          action_group="delete"
-          permissions="Delete portal content"
-          />
-    </configure>
-
-    <configure zcml:condition="not-installed collective.deletepermission">
-      <lawgiver:map_permissions
-          action_group="delete"
-          permissions="Delete objects"
-          />
-    </configure>
+    <lawgiver:map_permissions
+        action_group="delete"
+        permissions="Delete objects"
+        />
 
     <lawgiver:map_permissions
         action_group="manage security"
@@ -329,7 +315,10 @@
                      plone.restapi: Access Plone user information,
                      plone.restapi: Access Plone vocabularies,
                      plone.restapi: Use REST API,
-
+                     Inspect Relations,
+                     Manage Context Aliases,
+                     Manage Portal Aliases,
+                     View comments,
                      "
         />
 

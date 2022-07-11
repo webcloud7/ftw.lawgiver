@@ -33,14 +33,14 @@ class TestUtils(TestCase):
         folder = create(Builder('folder'))
         workflow = get_workflow_for(folder)
         self.assertTrue(workflow)
-        self.assertEquals('my_custom_workflow', workflow.id)
+        self.assertEqual('my_custom_workflow', workflow.id)
 
     def test_get_workflow_for_works_on_views(self):
         folder = create(Builder('folder'))
         view = folder.restrictedTraverse('@@sharing')
         workflow = get_workflow_for(view)
         self.assertTrue(workflow)
-        self.assertEquals('my_custom_workflow', workflow.id)
+        self.assertEqual('my_custom_workflow', workflow.id)
 
     def test_get_workflow_for_returns_None_for_plone_site(self):
         self.assertIsNone(get_workflow_for(self.portal))
@@ -56,7 +56,7 @@ class TestUtils(TestCase):
                         'Could not find "my_custom_workflow" specification')
 
         self.assertTrue(ISpecification.providedBy(spec))
-        self.assertEquals('My Custom Workflow', spec.title)
+        self.assertEqual('My Custom Workflow', spec.title)
 
     def test_get_specification_returns_None_when_not_found(self):
         spec = get_specification('not a valid workflow id')
@@ -66,7 +66,7 @@ class TestUtils(TestCase):
         folder = create(Builder('folder'))
         spec = get_specification_for(folder)
         self.assertTrue(spec)
-        self.assertEquals('My Custom Workflow', spec.title)
+        self.assertEqual('My Custom Workflow', spec.title)
 
     def test_get_specification_for_non_managed_object(self):
         self.assertIsNone(get_specification_for(self.portal))

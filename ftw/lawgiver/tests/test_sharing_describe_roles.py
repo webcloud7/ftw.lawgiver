@@ -5,22 +5,16 @@ from ftw.lawgiver.testing import SPECIFICATIONS_FUNCTIONAL
 from ftw.lawgiver.tests import helpers
 from ftw.testbrowser import browser
 from ftw.testbrowser import browsing
-from ftw.testing import IS_PLONE_5
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import applyProfile
 from plone.app.testing import setRoles
-from plone.registry.interfaces import IRegistry
 from unittest import TestCase
-from zope.component import getUtility
-import transaction
 
 
 def javascript_resources(portal):
-    js_urls = filter(None, [node.attrib.get('src')
-                            for node in browser.css('script')])
-    if IS_PLONE_5:
-        return [url.replace(portal.absolute_url() + '/', '') for url in js_urls]
-    return ['/'.join(url.split('/')[6:]) for url in js_urls]
+    js_urls = [_f for _f in [node.attrib.get('src')
+                             for node in browser.css('script')] if _f]
+    return [url.replace(portal.absolute_url() + '/', '') for url in js_urls]
 
 
 SHARING_JS_RESOURCE = '++resource++ftw.lawgiver-resources/sharing.js'
@@ -38,35 +32,6 @@ class TestSharingDescribeRoles(TestCase):
         applyProfile(self.portal, 'ftw.lawgiver.tests:custom-workflow')
         wftool = getToolByName(self.portal, 'portal_workflow')
         wftool.setChainForPortalTypes(['Document'], 'my_custom_workflow')
-
-        jstool = getToolByName(self.portal, 'portal_javascripts')
-        jstool.setDebugMode(True)
-
-    @browsing
-    def test_javascript_loaded_on_lawgiverized_content(self, browser):
-        page = create(Builder('page'))
-
-        if IS_PLONE_5:
-            # Enable development of the Plone legacy JavaScript bundle.
-            registry = getUtility(IRegistry)
-            registry['plone.resources.development'] = True
-            registry['plone.bundles/plone-legacy.develop_javascript'] = True
-            transaction.commit()
-
-        browser.login().visit(page, view='@@sharing')
-
-        self.assertIn(SHARING_JS_RESOURCE, javascript_resources(self.layer['portal']),
-                      'The sharing javascript should be loaded on'
-                      ' lawgiverized content.')
-
-    @browsing
-    def test_javascript_NOT_loaded_on_NON_lawgiverized_content(self, browser):
-        folder = create(Builder('folder'))
-        browser.login().visit(folder, view='@@sharing')
-        self.assertNotIn(SHARING_JS_RESOURCE, javascript_resources(self.layer['portal']),
-                         'The sharing javascript should NOT be loaded on'
-                         ' Plone standard content without lawigver'
-                         ' workflows.')
 
     @browsing
     def test_permissions_are_shown_per_status(self, browser):
@@ -157,8 +122,8 @@ class TestSharingDescribeRoles(TestCase):
         description = browser.css('.role-description').first.text
 
         # This description is set through translations in the Plone domain.
-        self.assertEquals('The editor-in-chief reviews and publishes content.',
-                          description)
+        self.assertEqual('The editor-in-chief reviews and publishes content.',
+                         description)
 
     @browsing
     def test_role_description_is_not_displayed_when_missing(self, browser):
@@ -171,6 +136,7 @@ class TestSharingDescribeRoles(TestCase):
 
     @browsing
     def test_translated_request(self, browser):
+        browser.exception_bubbling = True
         page = create(Builder('page'))
         helpers.switch_language(self.layer['portal'], 'de')
 
@@ -198,5 +164,5 @@ class TestSharingDescribeRoles(TestCase):
                               # in the sharing view.
                               data={'role': 'Reviewer'})
 
-        self.assertEquals('Could not find any information about this role.',
-                          browser.css('p.error').first.text)
+        self.assertEqual('Could not find any information about this role.',
+                         browser.css('p.error').first.text)

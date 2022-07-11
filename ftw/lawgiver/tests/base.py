@@ -1,16 +1,19 @@
+from __future__ import print_function
 from ftw.lawgiver.interfaces import IActionGroupRegistry
 from ftw.lawgiver.interfaces import IWorkflowGenerator
 from ftw.lawgiver.wdl.interfaces import IWorkflowSpecificationParser
 from ftw.lawgiver.wdl.languages import LANGUAGES
 from ftw.testing import MockTestCase
+from functools import reduce
+from io import BytesIO
 from lxml import etree
-from StringIO import StringIO
 from zope.component import getSiteManager
 from zope.component import getUtility
 from zope.component.hooks import getSite
 from zope.component.hooks import setSite
 from zope.dottedname.resolve import resolve
 import difflib
+import functools
 import os
 import unittest
 
@@ -28,6 +31,10 @@ def definition_xml_eliminate_standalone(node):
     if node.text is not None or len(node) > 0:
         return
     node.text = '\n  '
+
+
+def cmp(a, b):
+    return (a > b) - (a < b)
 
 
 def definition_xml_node_sorter(nodea, nodeb):
@@ -77,19 +84,19 @@ class XMLDiffTestCase(unittest.TestCase):
         parser = etree.XMLParser(remove_blank_text=True)
         try:
             xml = etree.fromstring(text, parser)
-        except etree.XMLSyntaxError, exc:
-            print '-' * 10
-            print exc.error_log
-            print '-' * 10
-            print text
-            print '-' * 10
+        except etree.XMLSyntaxError as exc:
+            print('-' * 10)
+            print(exc.error_log)
+            print('-' * 10)
+            print(text)
+            print('-' * 10)
             raise
 
-        norm = StringIO()
+        norm = BytesIO()
         if node_sorter:
             # Search for parent elements
             for parent in xml.xpath('//*[./*]'):
-                parent[:] = sorted(parent, node_sorter)
+                parent[:] = sorted(parent, key=functools.cmp_to_key(node_sorter))
 
         xml.getroottree().write_c14n(norm)
         xml = etree.fromstring(norm.getvalue())
@@ -101,6 +108,9 @@ class XMLDiffTestCase(unittest.TestCase):
     def assert_xml(self, xml1, xml2, node_sorter=None):
         norm1 = self._canonicalize_xml(xml1, node_sorter=node_sorter)
         norm2 = self._canonicalize_xml(xml2, node_sorter=node_sorter)
+
+        norm1 = norm1.decode('utf-8')
+        norm2 = norm2.decode('utf-8')
         if norm1 != norm2:
             raise AssertionError('\n'.join(difflib.unified_diff(
                 norm1.split('\n'),
@@ -159,7 +169,7 @@ class EqualityTestCase(XMLDiffTestCase):
 
         for path in self.specifications:
             spec = self.get_spec(path)
-            definitions[path] = StringIO()
+            definitions[path] = BytesIO()
             self.generate_workflow(spec, definitions[path])
 
         pairs = []
@@ -189,8 +199,8 @@ class EqualityTestCase(XMLDiffTestCase):
 
         else:
             return os.path.join(
-                    os.path.dirname(resolve(self.__module__).__file__),
-                    path)
+                os.path.dirname(resolve(self.__module__).__file__),
+                path)
 
     def _is_base_test(self):
         """Detect that the class was not subclassed so we can skip the tests.
@@ -215,9 +225,9 @@ class WorkflowTest(XMLDiffTestCase):
 
         else:
             return os.path.join(
-                    os.path.dirname(resolve(self.__module__).__file__),
-                    self.workflow_path,
-                    filename)
+                os.path.dirname(resolve(self.__module__).__file__),
+                self.workflow_path,
+                filename)
 
     def get_specification_path(self):
         for language in LANGUAGES.values():
@@ -262,15 +272,17 @@ class WorkflowTest(XMLDiffTestCase):
         with open(path) as spec_file:
             spec = parser(spec_file, path=path)
 
-        with open(self.get_path('result.xml'), 'w+') as result_file:
+        with open(self.get_path('result.xml'), 'bw+') as result_file:
             generator = getUtility(IWorkflowGenerator)
             generator(self.get_name(), spec).write(result_file)
             result_file.seek(0)
             result = result_file.read()
 
-        with open(self.get_path('definition.xml')) as expected_file:
+        with open(self.get_path('definition.xml'), 'rb') as expected_file:
+
+            expected_result = expected_file.read()
             self.assert_definition_xmls(
-                expected_file.read(), result)
+                expected_result, result)
 
     def test_no_unmapped_permissions(self):
         if self._is_base_test():
@@ -292,7 +304,7 @@ class WorkflowTest(XMLDiffTestCase):
                 continue
 
             if registry.get_action_groups_for_permission(
-                permission, workflow_name=self.get_name()):
+                    permission, workflow_name=self.get_name()):
                 continue
 
             if permission not in explicitly_ignored_permissions:

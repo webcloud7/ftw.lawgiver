@@ -60,17 +60,17 @@ class TestUpdateSpecifications(XMLDiffTestCase):
         wf_spec = workflow_dir.joinpath('specification.txt')
 
         with package.zcml_loaded(self.layer['configurationContext']):
-            self.assertIn('A three state publication workflow',
+            self.assertIn(b'A three state publication workflow',
                           wf_definition.bytes())
 
             wf_spec.write_bytes(wf_spec.bytes().replace(
-                'Description: A three state publication workflow',
-                'Description: Another three state publication workflow'))
+                b'Description: A three state publication workflow',
+                b'Description: Another three state publication workflow'))
 
             getUtility(IUpdater).update_all_specifications()
-            self.assertNotIn('A three state publication workflow',
+            self.assertNotIn(b'A three state publication workflow',
                              wf_definition.bytes())
-            self.assertIn('Another three state publication workflow',
+            self.assertIn(b'Another three state publication workflow',
                           wf_definition.bytes())
 
     def test_update_all_specifications_with_upgrade_step(self):
@@ -84,12 +84,14 @@ class TestUpdateSpecifications(XMLDiffTestCase):
 
         run_command('git init .', package.package_path)
         run_command('git add .', package.package_path)
+        run_command('git config user.email "you@example.com"', package.package_path)
+        run_command('git config --global user.name "Your Name"', package.package_path)
         run_command('git commit --no-gpg-sign -m "init"', package.package_path)
 
         with package.zcml_loaded(self.layer['configurationContext']):
             wf_spec.write_bytes(wf_spec.bytes().replace(
-                'Description: A three state publication workflow',
-                'Description: Another three state publication workflow'))
+                b'Description: A three state publication workflow',
+                b'Description: Another three state publication workflow'))
 
             with freeze(datetime(2010, 1, 1)):
                 getUtility(IUpdater).update_all_specifications_with_upgrade_step()
@@ -104,9 +106,9 @@ class TestUpdateSpecifications(XMLDiffTestCase):
 
             upgrade_code = upgrade_dir.joinpath('upgrade.py').bytes()
 
-            self.assertIn(
+            self.assertIn(bytes(
                 '\n        self.update_workflow_security(\n'
-                '            [\'{}\'],\n'
+                '            ["{}"],\n'
                 '            reindex_security=False)'.format(
-                    EXAMPLE_WORKFLOW_DIR.name),
+                    EXAMPLE_WORKFLOW_DIR.name), encoding='utf-8'),
                 upgrade_code)

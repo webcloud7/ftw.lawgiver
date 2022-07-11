@@ -23,26 +23,26 @@ class TestMapPermissionsZCML(BaseTest):
             '<lawgiver:map_permissions',
             '    action_group="view"',
             '    permissions="View" />',
-            )
+        )
 
         registry = self.get_registry()
-        self.assertEquals(set(registry._permissions.keys()),
-                          set(['Access contents information',
-                               'View']))
+        self.assertEqual(set(registry._permissions.keys()),
+                         set(['Access contents information',
+                              'View']))
 
     def test_action_group_required(self):
         with self.assertRaises(ConfigurationError):
             self.load_map_permissions_zcml(
                 '<lawgiver:map_permissions',
                 '    permissions="Access contents information" />',
-                )
+            )
 
     def test_permissions_required(self):
         with self.assertRaises(ConfigurationError):
             self.load_map_permissions_zcml(
                 '<lawgiver:map_permissions',
                 '    action_group="view" />',
-                )
+            )
 
 
 class TestIgnoreZCML(BaseTest):
@@ -62,10 +62,10 @@ class TestIgnoreZCML(BaseTest):
             '<lawgiver:ignore',
             '    workflow="foo"',
             '    permissions="List folder contents" />',
-            )
+        )
 
         registry = self.get_registry()
-        self.assertEquals(
+        self.assertEqual(
             {None: set([u'Access contents information', u'View']),
              u'foo': set([u'List folder contents'])},
 
@@ -85,7 +85,7 @@ class TestIgnoreZCML(BaseTest):
                 '                 Bar" />')
 
         exception_message = str(context_manager.exception)
-        self.assertIn('ConfigurationError: Seems that a comma is missing',
+        self.assertIn('Seems that a comma is missing',
                       exception_message)
 
 
@@ -116,7 +116,7 @@ class TestActionGroupRegistry(BaseTest):
             '<lawgiver:map_permissions',
             '    action_group="edit"',
             '    permissions="Modify portal content" />',
-            )
+        )
 
         registry = self.get_registry()
 
@@ -148,7 +148,7 @@ class TestActionGroupRegistry(BaseTest):
             '    action_group="view"',
             '    permissions="A custom permission for foo"'
             '    workflow="foo" />',
-            )
+        )
 
         # we first register the modify permission under "edit"
         # and then register it also under "view" for "foo" only..
@@ -190,7 +190,7 @@ class TestActionGroupRegistry(BaseTest):
             '    action_group="view"',
             '    permissions="Bar"'
             '    workflow="foo" />',
-            )
+        )
 
         registry = self.get_registry()
 
@@ -240,9 +240,9 @@ class TestActionGroupRegistry(BaseTest):
                 '                 View" />')
 
         self.assertEqual(
-            'File "<string>", line 5.0-8.25\n    ConfigurationError:'
-            ' Seems that a comma is missing in the "permissions" attribute'
-            ' of the lawgiver:map_permissions tag.',
+            'Seems that a comma is missing in the "permissions" attribute of '
+            'the lawgiver:map_permissions tag.'
+            '\n    File "<string>", line 5.0-8.25',
             str(cm.exception))
 
     def test_trailing_comma_works(self):
@@ -254,7 +254,7 @@ class TestActionGroupRegistry(BaseTest):
 
         registry = self.get_registry()
 
-        self.assertEquals(
+        self.assertEqual(
             sorted(['Access contents information', 'View']),
             sorted(registry._permissions.keys()),
 
@@ -264,7 +264,7 @@ class TestActionGroupRegistry(BaseTest):
         self.load_map_permissions_zcml(
             '<lawgiver:ignore',
             '    permissions="Access contents information" />',
-            )
+        )
 
         registry = self.get_registry()
 
@@ -279,7 +279,7 @@ class TestActionGroupRegistry(BaseTest):
             '<lawgiver:ignore',
             '    workflow="foo"'
             '    permissions="View" />',
-            )
+        )
 
         registry = self.get_registry()
 
@@ -300,7 +300,7 @@ class TestActionGroupRegistry(BaseTest):
             '<lawgiver:ignore',
             '    workflow="my_workflow"'
             '    permissions="List folder contents" />',
-            )
+        )
 
         registry = self.get_registry()
 
@@ -332,7 +332,7 @@ class TestActionGroupRegistry(BaseTest):
             '    action_group="view"',
             '    workflow="my_workflow"',
             '    permissions="Access contents information" />',
-            )
+        )
 
         registry = self.get_registry()
 
@@ -342,11 +342,11 @@ class TestActionGroupRegistry(BaseTest):
              'view_permissions': set([u'Access contents information'])},
 
             {'group': registry.get_action_groups_for_permission(
-                    'Access contents information', workflow_name='my_workflow'),
+                'Access contents information', workflow_name='my_workflow'),
              'ignored': registry.get_ignored_permissions('my_workflow'),
              'view_permissions': (
-                    registry.get_action_groups_for_workflow(
-                        'my_workflow').get('view'))},
+                registry.get_action_groups_for_workflow(
+                    'my_workflow').get('view'))},
 
             'Remapping a globally ignored permission to an action group for a'
             ' specific workflow should make it be re-managed and in the right'
@@ -358,10 +358,10 @@ class TestActionGroupRegistry(BaseTest):
              'view_permissions': None},
 
             {'group': registry.get_action_groups_for_permission(
-                    'Access contents information', workflow_name='default'),
+                'Access contents information', workflow_name='default'),
              'ignored': registry.get_ignored_permissions('default'),
              'view_permissions': (
-                    registry.get_action_groups_for_workflow('default').get('view'))},
+                registry.get_action_groups_for_workflow('default').get('view'))},
 
             'Remapping a globally ignored permission to an action group for a'
             ' specific workflow should keep it ignored for other workflows')
@@ -388,10 +388,10 @@ class TestActionGroupRegistry(BaseTest):
             '    permissions="Add portal content"'
             '    workflow="custom"'
             '    move="False" />',
-            )
+        )
 
         registry = self.get_registry()
-        self.assertEquals(
+        self.assertEqual(
             {u'add': set([u'Add folder', u'Add portal content']),
              u'add ticket': set([u'Add ticket', u'Add portal content'])},
 

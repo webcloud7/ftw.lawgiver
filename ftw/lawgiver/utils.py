@@ -7,6 +7,8 @@ from path import Path
 from plone.app.workflow.interfaces import ISharingPageRole
 from Products.CMFCore.interfaces import IContentish
 from Products.CMFCore.utils import getToolByName
+from six.moves import map
+from six.moves import zip
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.component import queryUtility
@@ -32,7 +34,7 @@ def get_workflow_for(context):
 
 def get_specification(workflow_id):
     discovery = getMultiAdapter((getSite(), getSite().REQUEST),
-                        IWorkflowSpecificationDiscovery)
+                                IWorkflowSpecificationDiscovery)
     parser = getUtility(IWorkflowSpecificationParser)
 
     for path in discovery.discover():
@@ -101,8 +103,8 @@ def merge_role_inheritance(specification, status):
     result = []
     for inheritor_role, base_role in customer_roles:
         result.append((
-                specification.role_mapping[inheritor_role],
-                specification.role_mapping[base_role]))
+            specification.role_mapping[inheritor_role],
+            specification.role_mapping[base_role]))
 
     return result
 
@@ -130,7 +132,7 @@ def get_roles_inheriting_from(roles, role_inheritance):
 
     # role_inheritance is: [('inheritor', 'base'), ('inheritor2', 'base')]
     # make: {'base': ['inheritor', 'inheritor2']}
-    base_roles = set(zip(*role_inheritance)[1])
+    base_roles = set(list(zip(*role_inheritance))[1])
     mapping = dict([(key, []) for key in base_roles])
     for inheritor, base in role_inheritance:
         mapping[base].append(inheritor)
@@ -173,10 +175,10 @@ def get_roles_inherited_by(roles, role_inheritance):
         if role in result:
             return
         result.append(role)
-        map(_recurse, [parent for (child, parent) in role_inheritance
-                       if child == role])
+        list(map(_recurse, [parent for (child, parent) in role_inheritance
+                            if child == role]))
 
-    map(_recurse, roles)
+    list(map(_recurse, roles))
     return result
 
 
