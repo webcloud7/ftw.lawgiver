@@ -312,7 +312,7 @@ class WorkflowTest(XMLDiffTestCase):
 
         self.maxDiff = None
         self.longMessage = True
-        self.assertEquals(
+        self.assertEqual(
             [], unmapped,
             'There are permissions which are not yet mapped'
             ' to action groups, nor marked as not to manage.')

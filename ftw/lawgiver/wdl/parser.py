@@ -92,7 +92,7 @@ class SpecificationParser(object):
 
         self._config = six.moves.configparser.RawConfigParser()
         self._config.optionxform = str  # do not lowercase tokens
-        self._config.readfp(stream)
+        self._config.read_file(stream)
 
     def _convert(self):
         """Convert the configparser `self._config` into a ISpecification
