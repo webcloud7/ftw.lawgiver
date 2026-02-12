@@ -4,13 +4,13 @@ version: 2.1
 workflows:
   tests:
     jobs:
-      - plone6py39
+      - plone6py312
 
 jobs:
-  plone6py39:
+  plone6py312:
     resource_class: medium
     docker:
-      - image: webcloud7/plone-test:6.0.0a6.2
+      - image: webcloud7/plone-test:6.1.2-py312
     environment:
       PIP_FIND_LINKS: /wheelhouse/
       zope_i18n_compile_mo_files: "true"

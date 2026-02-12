@@ -6,7 +6,7 @@ import subprocess
 import transaction
 
 
-ASSETS = Path(__file__).joinpath('..', 'assets').abspath()
+ASSETS = Path(__file__).joinpath('..', 'assets').absolute()
 EXAMPLE_WORKFLOW_DIR = ASSETS.joinpath('example_workflow')
 EXAMPLE_WF_SPEC = EXAMPLE_WORKFLOW_DIR.joinpath('specification.txt')
 EXAMPLE_WF_DEF = EXAMPLE_WORKFLOW_DIR.joinpath('definition.xml')

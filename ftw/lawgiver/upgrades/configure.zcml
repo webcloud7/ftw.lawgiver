@@ -1,8 +1,8 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:upgrade-step="http://namespaces.zope.org/ftw.upgrade"
+    xmlns:upgrade-step="http://namespaces.zope.org/collective.ftw.upgrade"
     i18n_domain="ftw.lawgiver">
 
-    <include package="ftw.upgrade" file="meta.zcml" />
+    <include package="collective.ftw.upgrade" file="meta.zcml" />
 
 </configure>

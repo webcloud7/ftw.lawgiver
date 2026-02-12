@@ -9,6 +9,7 @@ from plone.app.testing import TEST_USER_ID
 from plone.app.testing import applyProfile
 from plone.app.testing import setRoles
 from unittest import TestCase
+import transaction
 
 
 def javascript_resources(portal):
@@ -32,6 +33,7 @@ class TestSharingDescribeRoles(TestCase):
         applyProfile(self.portal, 'ftw.lawgiver.tests:custom-workflow')
         wftool = getToolByName(self.portal, 'portal_workflow')
         wftool.setChainForPortalTypes(['Document'], 'my_custom_workflow')
+        transaction.commit()
 
     @browsing
     def test_permissions_are_shown_per_status(self, browser):

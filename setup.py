@@ -51,7 +51,7 @@ setup(name='ftw.lawgiver',
       install_requires=[
           'Plone',
           'argparse',
-          'ftw.upgrade',
+          'collective.ftw.upgrade',
           'path.py',
           'setuptools',
           'i18ndude>=5.4.2',

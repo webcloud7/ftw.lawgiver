@@ -2,6 +2,7 @@ from ftw.testbrowser import browser
 from functools import partial
 from operator import methodcaller
 from plone.app.testing import SITE_OWNER_NAME
+from plone.app.testing import SITE_OWNER_PASSWORD
 from six.moves import map
 import os.path
 
@@ -11,7 +12,7 @@ TESTS_DIRECTORY = os.path.abspath(
 
 
 def visit(specification_title):
-    browser.login(SITE_OWNER_NAME)
+    browser.login(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
     browser.open(view='lawgiver-list-specs')
     specs = browser.css('dl.specifications').first
     link = specs.find(specification_title)

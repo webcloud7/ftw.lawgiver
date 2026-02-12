@@ -12,6 +12,9 @@ from plone.app.testing import PloneSandboxLayer
 from plone.testing import z2
 from zope.configuration import xmlconfig
 import ftw.lawgiver.tests.builders  # noqa
+import os
+
+os.environ['zope_i18n_compile_mo_files'] = 'true'
 
 
 class MetaZCMLLayer(ComponentRegistryLayer):

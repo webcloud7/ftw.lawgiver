@@ -95,11 +95,11 @@ class TestUtils(TestCase):
         self.assertEqual('Can edit', fallback.default)
 
     def test_in_development(self):
+        import ftw.lawgiver
         self.assertTrue(
-            in_development(get_distribution('ftw.lawgiver').location
-                           + '/ftw/lawgiver/__init__.py'),
+            in_development(ftw.lawgiver.__file__),
             'Expected ftw.lawgiver to be in development.')
+        import Products.CMFPlone
         self.assertFalse(
-            in_development(get_distribution('Products.CMFPlone').location
-                           + 'Products/CMFPlone/__init__.py'),
+            in_development(Products.CMFPlone.__file__),
             'Expected Plone to not be in development.')

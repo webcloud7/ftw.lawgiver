@@ -26,12 +26,12 @@ import subprocess
 import sys
 
 try:
-    pkg_resources.get_distribution('ftw.upgrade')
+    pkg_resources.get_distribution('collective.ftw.upgrade')
 except pkg_resources.DistributionNotFound:
     FTW_UPGRADE_INSTALLED = False
 else:
     FTW_UPGRADE_INSTALLED = True
-    from ftw.upgrade.directory.scaffold import UpgradeStepCreator
+    from collective.ftw.upgrade.directory.scaffold import UpgradeStepCreator
 
 
 class StatusMessageFormatter(object):
@@ -84,19 +84,19 @@ class Updater(object):
     def update_all_specifications_with_upgrade_step(
             self, output_formatter=None):
         if not FTW_UPGRADE_INSTALLED:
-            raise UpgradeStepCreationError('ftw.upgrade is not installed.')
+            raise UpgradeStepCreationError('collective.ftw.upgrade is not installed.')
 
         by_packages = defaultdict(list)
         for specification_path in self.update_all_specifications(
                 output_formatter=output_formatter):
             pkg_path = (Path(specification_path)
                         .joinpath('..', '..', '..', '..', '..')
-                        .abspath())
+                        .absolute())
             by_packages[pkg_path].append(Path(specification_path))
 
         for pkg_path, spec_paths in by_packages.items():
             upgrades_path = pkg_path.joinpath('upgrades')
-            if not upgrades_path.isdir():
+            if not upgrades_path.is_dir():
                 raise UpgradeStepCreationError('Missing folder at {!r}'.format(
                     upgrades_path))
 
@@ -104,7 +104,7 @@ class Updater(object):
             upgrade_dir = (UpgradeStepCreator(upgrades_path)
                            .create('Update workflows.'))
             for spec_path in spec_paths:
-                def_path = spec_path.joinpath('..', 'definition.xml').abspath()
+                def_path = spec_path.joinpath('..', 'definition.xml').absolute()
                 wf_name = spec_path.parent.name
                 target_dir = upgrade_dir.joinpath('workflows', wf_name)
                 target_dir.makedirs()

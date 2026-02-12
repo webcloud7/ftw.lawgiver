@@ -181,10 +181,10 @@ msgstr "Aktualisiert Übersetzungs-Dateien ${pot-name} und ${po-name} in dem loc
 msgid "description_update_security"
 msgstr "Der Button \"${button_title}\" aktualisiert die Sicherheitseinstellungen aller (!) Objekte auf dieser Plone-Seite. Dies ist der gleiche Button wie der \"Update security settings\" in portal_workflow."
 
-#. Default: "Update specifications and create an upgrade step with ftw.upgrade."
+#. Default: "Update specifications and create an upgrade step with collective.ftw.upgrade."
 #: ./ftw/lawgiver/browser/templates/speclisting.pt:66
 msgid "description_update_specs_with_upgradestep"
-msgstr "Spezifikationen aktualisieren und einen Upgrade Step erstellen. Dies benötigt ein registriertes ftw.upgrade upgrade-step:directory mit dem Name \"upgrades\"."
+msgstr "Spezifikationen aktualisieren und einen Upgrade Step erstellen. Dies benötigt ein registriertes collective.ftw.upgrade upgrade-step:directory mit dem Name \"upgrades\"."
 
 #. Default: "When the \"${button_title}\" button is clicked the workflow is generated and written to the <i title=\"${DYNAMIC_CONTENT}\">definition.xml</i> and then the workflow is imported using Generic Setup."
 #: ./ftw/lawgiver/browser/templates/details.pt:121

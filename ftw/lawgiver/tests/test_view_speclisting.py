@@ -5,6 +5,7 @@ from ftw.testbrowser import browsing
 from ftw.testbrowser.pages import statusmessages
 from operator import methodcaller
 from plone.app.testing import SITE_OWNER_NAME
+from plone.app.testing import SITE_OWNER_PASSWORD
 from six.moves import map
 from unittest import TestCase
 import os.path
@@ -36,7 +37,7 @@ class TestSpecificationListingsView(TestCase):
 
     @browsing
     def test_listing_spec_order(self, browser):
-        browser.login(SITE_OWNER_NAME).visit(view='lawgiver-list-specs')
+        browser.login(SITE_OWNER_NAME, SITE_OWNER_PASSWORD).visit(view='lawgiver-list-specs')
         self.assertCountEqual(
             ['Bar Workflow (wf-bar)',
              'Foo Workflow (wf-foo)',
@@ -49,7 +50,7 @@ class TestSpecificationListingsView(TestCase):
 
     @browsing
     def test_listing_spec_descriptions(self, browser):
-        browser.login(SITE_OWNER_NAME).visit(view='lawgiver-list-specs')
+        browser.login(SITE_OWNER_NAME, SITE_OWNER_PASSWORD).visit(view='lawgiver-list-specs')
 
         self.assertEqual(
             {'another-spec-based-workflow': '',
@@ -67,7 +68,7 @@ class TestSpecificationListingsView(TestCase):
 
     @browsing
     def test_spec_links_are_distinct(self, browser):
-        browser.login(SITE_OWNER_NAME).visit(view='lawgiver-list-specs')
+        browser.login(SITE_OWNER_NAME, SITE_OWNER_PASSWORD).visit(view='lawgiver-list-specs')
         links = [link.attrib.get('href')
                  for link in browser.css('.specifications dt a')]
 
@@ -77,7 +78,7 @@ class TestSpecificationListingsView(TestCase):
 
     @browsing
     def test_update_all_sepcifications(self, browser):
-        browser.login(SITE_OWNER_NAME).visit(view='lawgiver-list-specs')
+        browser.login(SITE_OWNER_NAME, SITE_OWNER_PASSWORD).visit(view='lawgiver-list-specs')
         browser.exception_bubbling = True
         browser.find('Update all specifications').click()
 

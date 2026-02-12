@@ -10,6 +10,7 @@ from plone.app.testing import applyProfile
 from plone.app.testing import setRoles
 from unittest import TestCase
 from zope.component import getMultiAdapter
+import transaction
 
 
 class TestSharingRoleTranslation(TestCase):
@@ -19,6 +20,7 @@ class TestSharingRoleTranslation(TestCase):
     def setUp(self):
         self.portal = self.layer['portal']
         setRoles(self.portal, TEST_USER_ID, ['Manager', 'Editor'])
+        transaction.commit()
 
     @browsing
     def test_default_role_translation_for_default_workflows(self, browser):
@@ -34,8 +36,10 @@ class TestSharingRoleTranslation(TestCase):
         applyProfile(self.portal, 'ftw.lawgiver.tests:role-translation')
         wftool = getToolByName(self.portal, 'portal_workflow')
         wftool.setChainForPortalTypes(['Document'], 'role-translation')
+        transaction.commit()
 
         document = create(Builder('document'))
+
         sharing.visit(document)
 
         self.assertEqual(
@@ -47,6 +51,7 @@ class TestSharingRoleTranslation(TestCase):
         applyProfile(self.portal, 'ftw.lawgiver.tests:role-translation')
         wftool = getToolByName(self.portal, 'portal_workflow')
         wftool.setChainForPortalTypes(['Document'], 'role-translation')
+        transaction.commit()
 
         document = create(Builder('document'))
         sharing.visit_api(document)
