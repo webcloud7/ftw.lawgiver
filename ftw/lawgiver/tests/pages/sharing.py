@@ -1,14 +1,15 @@
 from ftw.testbrowser import browser
 from plone.app.testing import SITE_OWNER_NAME
+from plone.app.testing import SITE_OWNER_PASSWORD
 
 
 def visit(obj):
-    browser.login(SITE_OWNER_NAME)
+    browser.login(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
     browser.open(obj, view='sharing')
 
 
 def visit_api(obj):
-    browser.login(SITE_OWNER_NAME)
+    browser.login(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
     browser.open(
         obj,
         view='sharing',

@@ -82,7 +82,7 @@ class TestWorkflowSpecificationDiscovery(TestCase):
 
         path = component.discover()[0]
         hash_ = component.hash(path)
-        self.assertNotEquals(path, hash_, 'The hash should not be the path.')
+        self.assertNotEqual(path, hash_, 'The hash should not be the path.')
 
         self.assertEqual(
             path, component.unhash(hash_),

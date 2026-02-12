@@ -64,7 +64,7 @@
                    value="Update all specifications with upgradestep" />
 
             <p class="discreet" i18n:translate="description_update_specs_with_upgradestep">
-                Update specifications and create an upgrade step with ftw.upgrade.
+                Update specifications and create an upgrade step with collective.ftw.upgrade.
             </p>
 
           </form>

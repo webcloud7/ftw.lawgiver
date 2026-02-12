@@ -24,7 +24,7 @@ BAR_SPECIFICATION = os.path.abspath(os.path.join(
         TESTS_DIRECTORY,
         'profiles', 'bar', 'workflows', 'wf-bar', 'specification.txt'))
 
-ASSETS = Path(__file__).joinpath('..', 'assets').abspath()
+ASSETS = Path(__file__).joinpath('..', 'assets').absolute()
 
 
 class TestUpdater(TestCase):
@@ -98,11 +98,11 @@ class TestUpdateSpecifications(XMLDiffTestCase):
 
             upgrade_dir = package.package_path.joinpath(
                 'upgrades', '20100101000000_update_workflows')
-            self.assertTrue(upgrade_dir.isdir(), upgrade_dir)
+            self.assertTrue(upgrade_dir.is_dir(), upgrade_dir)
 
             wf_definition = upgrade_dir.joinpath(
                 'workflows', EXAMPLE_WORKFLOW_DIR.name, 'definition.xml')
-            self.assertTrue(wf_definition.isfile(), wf_definition)
+            self.assertTrue(wf_definition.is_file(), wf_definition)
 
             upgrade_code = upgrade_dir.joinpath('upgrade.py').bytes()
 

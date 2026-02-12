@@ -184,7 +184,7 @@ msgstr ""
 msgid "description_update_security"
 msgstr ""
 
-#. Default: "Update specifications and create an upgrade step with ftw.upgrade."
+#. Default: "Update specifications and create an upgrade step with collective.ftw.upgrade."
 #: ./ftw/lawgiver/browser/templates/speclisting.pt:66
 msgid "description_update_specs_with_upgradestep"
 msgstr ""

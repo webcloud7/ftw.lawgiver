@@ -52,11 +52,6 @@ class DynamicRolesUtility(object):
         context = request.PARENTS[0]
 
         if is_rest_available and isinstance(context, RESTWrapper):
-            # when the sharing endpoint is called through the REST-API, the
-            # context is a RESTWrapper object, which normally delegates
-            # everything to self.context, but this does not work for certain
-            # magic methods, like __provides__ breaks get_workflow_for in
-            # DynamicRolesAdapter. We therefore pass the real object here.
             context = context.context
 
         if IApplication.providedBy(context):
